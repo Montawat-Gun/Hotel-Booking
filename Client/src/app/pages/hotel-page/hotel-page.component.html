@@ -1,0 +1,33 @@
+<p-breadcrumb [model]="items"></p-breadcrumb>
+
+<p-card header="Hotel">
+	<div class="grid">
+		<div class="field col">
+			<label for="name">Name</label>
+			<input class="w-full p-inputtext-sm inputfield" id="name" type="text" aria-describedby="name" pInputText />
+		</div>
+		<div class="field col">
+			<label for="provicne">Provicne</label>
+			<p-dropdown id="provicne" styleClass="w-full p-inputtext-sm" [options]="provinces" [filter]="true"
+				filterBy="name" optionLabel="name" (onChange)="onProvinceChange($event)" [(ngModel)]="selectedProvince"
+				placeholder="กรุณาเลือกจังหวัด">
+			</p-dropdown>
+		</div>
+	</div>
+	<div class="grid">
+		<div class="field col">
+			<label for="amphure">Amphure</label>
+			<p-dropdown id="amphure" styleClass="w-full p-inputtext-sm" [options]="amphures" [filter]="true"
+				filterBy="name" optionLabel="name" (onChange)="onAmphureChange($event)" [disabled]="!selectedProvince"
+				[(ngModel)]="selectedAmphure" placeholder="กรุณาเลือกอำเภอ">
+			</p-dropdown>
+		</div>
+		<div class="field col">
+			<label for="tumbol">Tumbol</label>
+			<p-dropdown id="tumbol" styleClass="w-full p-inputtext-sm" [options]="tumbols" [filter]="true" 
+				filterBy="name" optionLabel="name" [(ngModel)]="selectedTumbol" [disabled]="!selectedAmphure" placeholder="กรุณาเลือกตำบล">
+			</p-dropdown>
+		</div>
+	</div>
+	<p-button label="Search"></p-button>
+</p-card>
