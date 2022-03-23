@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BL.Services
 {
-    public interface IHotelService
+    public interface IHotelService : IEntityService<int, Hotel, ReadHotelDto, CreateHotelDto, UpdateHotelDto, QueryHotelDto>
     {
     }
 }

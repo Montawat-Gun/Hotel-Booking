@@ -24,35 +24,35 @@ namespace WebAPI.Controllers
         [HttpGet("GetProvinceById/{provinceId}")]
         public ActionResult<Province> GetProvinceById(int provinceId)
         {
-            var result = _province.GetProvices().FirstOrDefault(x => x.Id == provinceId);
+            var result = _province.GetProviceById(provinceId);
             return Ok(result);
         }
 
         [HttpGet("GetAmphures/{provinceId}")]
         public ActionResult<List<Amphure>> GetAmphures(int provinceId)
         {
-            var result = _province.GetAmphure().Where(x => x.ProvinceId == provinceId);
+            var result = _province.GetAmphuresByProvinceId(provinceId);
             return Ok(result);
         }
 
         [HttpGet("GetAmphureById/{amphureId}")]
         public ActionResult<Amphure> GetAmphureById(int amphureId)
         {
-            var result = _province.GetAmphure().FirstOrDefault(x => x.Id == amphureId);
+            var result = _province.GetAmphureById(amphureId);
             return Ok(result);
         }
 
         [HttpGet("GetTumbols/{amphureId}")]
         public ActionResult<List<Tumbol>> GetTumbols(int amphureId)
         {
-            var result = _province.GetTumbol().Where(x => x.AmphureId == amphureId);
+            var result = _province.GetTumbolsByAmphureId(amphureId);
             return Ok(result);
         }
 
-        [HttpGet("GetTumbolById/{tumbol}")]
-        public ActionResult<Amphure> GetTumbolById(int tumbol)
+        [HttpGet("GetTumbolById/{tumbolId}")]
+        public ActionResult<Tumbol> GetTumbolById(int tumbolId)
         {
-            var result = _province.GetTumbol().FirstOrDefault(x => x.Id == tumbol);
+            var result = _province.GetTumbolById(tumbolId);
             return Ok(result);
         }
     }

@@ -408,4 +408,5 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/ 
 .angular/
+.vscode/
  

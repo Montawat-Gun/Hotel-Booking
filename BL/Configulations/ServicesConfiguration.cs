@@ -1,6 +1,5 @@
 ﻿using BL.Data;
-using BL.DTOs;
-using BL.Entities;
+using BL.Helpers;
 using BL.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -23,10 +22,11 @@ namespace BL.Configulations
                 // Update Database.
                 var context = serviceProvider.GetRequiredService<DataContext>();
                 context.Database.Migrate();
+                SeedData.Seed(context);
             }
 
             //Add services.
-            services.AddScoped(typeof(IEntityService<,,,,>), typeof(EntityService<,,,,>));
+            services.AddScoped(typeof(IEntityService<,,,,,>), typeof(EntityService<,,,,,>));
             services.AddScoped<IHotelService, HotelService>();
             services.AddScoped<ProvinceService>();
 

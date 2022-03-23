@@ -19,6 +19,7 @@ namespace BL.Data.Migrations
                     ProvinceId = table.Column<int>(type: "int", nullable: false),
                     AmphureId = table.Column<int>(type: "int", nullable: false),
                     TumbolId = table.Column<int>(type: "int", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },

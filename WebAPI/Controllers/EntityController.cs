@@ -1,28 +1,31 @@
-﻿using BL.Services;
+﻿using BL.Helpers;
+using BL.Services;
 using Mapster;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class EntityController<TKey, TEntity, TReadDTO, TCreateDTO, TUpdateDto> : ControllerBase
+    public class EntityController<TKey, TEntity, TReadDTO, TCreateDTO, TUpdateDto, TQueryDto> : ControllerBase
     {
-        private readonly IEntityService<TKey, TEntity, TReadDTO, TCreateDTO, TUpdateDto> _entity;
-        public EntityController(IEntityService<TKey, TEntity, TReadDTO, TCreateDTO, TUpdateDto> entity)
+        protected readonly IEntityService<TKey, TEntity, TReadDTO, TCreateDTO, TUpdateDto, TQueryDto> _entity;
+        public EntityController(IEntityService<TKey, TEntity, TReadDTO, TCreateDTO, TUpdateDto, TQueryDto> entity)
         {
             _entity = entity;
         }
 
         [HttpGet]
-        public virtual ActionResult<List<TReadDTO>> GetList()
+        public virtual ActionResult<LazyLoadResult<List<TReadDTO>>> GetList([FromQuery] LazyloadDto lazyload, [FromQuery] TQueryDto queryDto)
         {
-            return _entity.GetList();
+            var data = _entity.GetList(lazyload, queryDto);
+            var count = _entity.GetCount();
+            var result = new LazyLoadResult<List<TReadDTO>>(count, data);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<TReadDTO> GetList(TKey id)
+        public virtual ActionResult<TReadDTO> GetById(TKey id)
         {
             var result = _entity.Get(id);
             if (result is null)
@@ -33,7 +36,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult<TReadDTO> Insert(TCreateDTO modelDto)
+        public virtual ActionResult<TReadDTO> Insert(TCreateDTO modelDto)
         {
             var model = modelDto.Adapt<TEntity>();
             var result = _entity.Add(model);
@@ -41,7 +44,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<TReadDTO> Update(TKey id, TUpdateDto modelDto)
+        public virtual ActionResult<TReadDTO> Update(TKey id, TUpdateDto modelDto)
         {
             var entity = _entity.FindById(id);
             if (entity is null)
@@ -64,7 +67,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(TKey id)
+        public virtual ActionResult Delete(TKey id)
         {
             var entity = _entity.FindById(id);
             _entity.Delete(entity);

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BL.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220322120801_InitiateCreated")]
+    [Migration("20220323125516_InitiateCreated")]
     partial class InitiateCreated
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -79,6 +79,11 @@ namespace BL.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("AmphureId")
                         .HasColumnType("int");

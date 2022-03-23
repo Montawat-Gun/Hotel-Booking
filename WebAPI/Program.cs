@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((ctx, lc) => lc
     .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
     .Enrich.FromLogContext()
-    .WriteTo.Console()
     .WriteTo.File("logs/log" + DateTime.Now.ToString("yyyy-MM-dd"))
 );
 

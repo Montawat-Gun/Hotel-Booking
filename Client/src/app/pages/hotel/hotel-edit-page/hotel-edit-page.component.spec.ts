@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HotelPageComponent } from './hotel-page.component';
+import { HotelEditPageComponent } from './hotel-edit-page.component';
 
-describe('HotelPageComponent', () => {
-  let component: HotelPageComponent;
-  let fixture: ComponentFixture<HotelPageComponent>;
+describe('HotelEditPageComponent', () => {
+  let component: HotelEditPageComponent;
+  let fixture: ComponentFixture<HotelEditPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HotelPageComponent ]
+      declarations: [ HotelEditPageComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HotelPageComponent);
+    fixture = TestBed.createComponent(HotelEditPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

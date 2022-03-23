@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BL.Entities
 {
@@ -24,6 +19,9 @@ namespace BL.Entities
 
         [Required]
         public int TumbolId { get; set; }
+
+        [Required, StringLength(200)]
+        public string Address { get; set; }
 
         public List<Booking> Booking { get; set; }
     }

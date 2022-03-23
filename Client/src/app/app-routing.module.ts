@@ -1,10 +1,13 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { HotelPageComponent } from './pages/hotel-page/hotel-page.component';
+import { HotelEditPageComponent } from './pages/hotel/hotel-edit-page/hotel-edit-page.component';
+import { HotelListPageComponent } from './pages/hotel/hotel-list-page/hotel-list-page.component';
+import { HotelResolver } from './pages/hotel/hotel.resolver';
 
 const routes: Routes = [
-  { path: '', component: HotelPageComponent, pathMatch: 'full' }
+  { path: '', component: HotelListPageComponent, pathMatch: 'full' },
+  { path: 'add', component: HotelEditPageComponent, },
+  { path: 'edit/:id', component: HotelEditPageComponent, resolve: { hotel: HotelResolver } },
 ];
 
 @NgModule({

@@ -5,6 +5,10 @@ import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
+import { ToolbarModule } from 'primeng/toolbar';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @NgModule({
   declarations: [],
@@ -16,7 +20,11 @@ import { ButtonModule } from 'primeng/button';
     CardModule,
     InputTextModule,
     DropdownModule,
-    ButtonModule
+    ButtonModule,
+    TableModule,
+    ToolbarModule,
+    ToastModule,
+    ConfirmDialogModule,
   ]
 })
 export class ShareModule { }
