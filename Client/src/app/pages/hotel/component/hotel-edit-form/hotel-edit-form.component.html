@@ -1,0 +1,47 @@
+<form [formGroup]="formEdit" (ngSubmit)="onSave()">
+	<div class="grid">
+		<div class="field col">
+			<label for="name">ชื่อโรงแรม</label>
+			<input id="name" pInputText type="text" name="name" class="w-full p-inputtext-sm inputfield"
+				autocomplete="none" placeholder="ชื่อห้องพัก" formControlName="name" (onChange)="clearError()"
+				[ngClass]="{ 'ng-invalid ng-dirty': isSubmited && f['name'].errors }" maxlength="100" />
+			<small *ngIf="isSubmited && f['name'].errors" id="name-help"
+				class="p-error block">กรุณากรอกชื่อโรงแรม</small>
+		</div>
+		<div class="field col">
+			<label for="provicne">จังหวัด</label>
+			<p-dropdown id="provicne" styleClass="w-full p-inputtext-sm" [options]="provinces" [filter]="true"
+				filterBy="name" optionLabel="name" optionValue="id" (onChange)="onProvinceChange($event)"
+				formControlName="provinceId" placeholder="กรุณาเลือกจังหวัด"
+				[ngClass]="{ 'ng-invalid ng-dirty': isSubmited && f['provinceId'].errors }">
+			</p-dropdown>
+			<small *ngIf="isSubmited && f['provinceId'].errors" id="name-help"
+				class="p-error block">กรุณากรอกเลือกจังหวัด</small>
+		</div>
+	</div>
+	<div class="grid">
+		<div class="field col">
+			<label for="amphure">อำเภอ</label>
+			<p-dropdown id="amphure" styleClass="w-full p-inputtext-sm" [options]="amphures" filterBy="name"
+				optionLabel="name" optionValue="id" (onChange)="onAmphureChange($event)" formControlName="amphureId"
+				placeholder="กรุณาเลือกอำเภอ"
+				[ngClass]="{ 'ng-invalid ng-dirty': isSubmited && f['amphureId'].errors }">
+			</p-dropdown>
+			<small *ngIf="isSubmited && f['amphureId'].errors" id="name-help"
+				class="p-error block">กรุณากรอกเลือกอำเภอ</small>
+		</div>
+		<div class="field col">
+			<label for="tumbol">ตำบล</label>
+			<p-dropdown id="tumbol" styleClass="w-full p-inputtext-sm" [options]="tumbols" filterBy="name"
+				optionLabel="name" optionValue="id" formControlName="tumbolId" placeholder="กรุณาเลือกตำบล"
+				[ngClass]="{ 'ng-invalid ng-dirty': isSubmited && f['tumbolId'].errors }" (onChange)="clearError()">
+			</p-dropdown>
+			<small *ngIf="isSubmited && f['tumbolId'].errors" id="name-help"
+				class="p-error block">กรุณากรอกเลือกตำบล</small>
+		</div>
+	</div>
+	<div class="grid ml-1">
+			<button pButton label="ยกเลิก" type="button" class="p-button-secondary mr-2" (click)="onBack()"></button>
+			<p-button type="submit" label="บันทึก" [loading]="isLoading"></p-button>
+	</div>
+</form>

@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ConfirmationService, LazyLoadEvent, MenuItem, MessageService, PrimeIcons } from 'primeng/api';
-import { IHotel, IHotelCriteria } from 'src/app/pages/hotel/component/hotel-search-form/interfaces/hotel.interface';
-import { IAmphure, IProvince, ITumbol } from 'src/app/interfaces/province.interface';
+import { ConfirmationService, LazyLoadEvent, MenuItem, MessageService } from 'primeng/api';
+import { IHotel, IHotelCriteria } from 'src/app/pages/hotel/interfaces/hotel.interface';
 import { HotelService } from 'src/app/services/hotel.service';
 import { HotelSearchFormComponent } from '../component/hotel-search-form/hotel-search-form.component';
 import { finalize, Observable, Subject, switchMap } from 'rxjs';
 import { LazyLoadResult } from 'src/app/interfaces/lazyload.interface';
+import { ConfirmDeleteConfig, DefualtLazyloadConfig } from 'src/app/app.config';
 
 @Component({
   selector: 'app-hotel-list-page',
@@ -17,17 +17,23 @@ export class HotelListPageComponent implements OnInit {
 
   breadcrumbItems: MenuItem[] = [];
 
-  cols: { field: string, header: string, showField: boolean }[] = [];
+  cols: { field: string, header: string }[] = [];
 
-  totalRecords!: number;
   data: IHotel[] = [];
   virtualData: IHotel[] = [];
 
   search$!: Observable<LazyLoadResult<IHotel[]>>;
   criteria$ = new Subject<IHotelCriteria>();
 
-  rows: number = 5;
-  first: number = 0;
+  count!: number;
+  first: number = DefualtLazyloadConfig.first;
+  rows: number = DefualtLazyloadConfig.rows;
+
+  loading: boolean = false;
+  saerchData: IHotelCriteria = {
+    first: 0,
+    rows: 5,
+  };
 
   constructor(
     private hotelService: HotelService,
@@ -42,50 +48,59 @@ export class HotelListPageComponent implements OnInit {
     ];
 
     this.cols = [
-      { field: 'name', header: 'ชื่อโรงแรม', showField: true },
-      { field: 'address', header: 'ที่อยู่', showField: true },
-      { field: 'id', header: 'Action', showField: false },
+      { field: '', header: '' },
+      { field: '', header: '' },
+      { field: '', header: '' },
+      { field: '', header: '' },
+      { field: '', header: '' },
     ];
 
+    this.loading = true;
     this.search$ = this.criteria$
       .pipe(
         switchMap((criteria) =>
           this.hotelService.getList(criteria || { first: this.first, rows: this.rows })
+            .pipe(finalize(() => {
+              if (this.loading) {
+                this.loading = false;
+              }
+            }))
         ),
       );
 
     this.search$
       .subscribe((res) => {
-        this.data = [...res.data];
-        this.totalRecords = res.count;
+        this.count = res.count;
+        this.virtualData = Array.from({ length: this.count });
+        if (this.rows >= this.count) {
+          this.rows == this.count;
+        }
+        this.virtualData.splice(this.first, this.rows, ...res.data);
+        this.virtualData = [...this.virtualData];
       })
   }
 
-  onSearch(e: any) {
-
+  onSearch(searchData: IHotelCriteria) {
+    this.first = DefualtLazyloadConfig.first;
+    this.rows = DefualtLazyloadConfig.rows;
+    searchData.first = this.first;
+    searchData.rows = this.rows;
+    this.loading = true;
+    this.saerchData = searchData;
+    this.criteria$.next(searchData);
   }
 
   onLoadLazy(event: LazyLoadEvent) {
-    console.log('lazy load', event)
     this.first = Number(event.first);
     this.rows = Number(event.rows);
-    this.criteria$.next(event);
-
-  }
-
-  onOpen(id: number) {
-
+    this.saerchData.first = this.first;
+    this.saerchData.rows = this.rows;
+    this.criteria$.next(this.saerchData);
   }
 
   onDelete(id: number) {
     this.confirmationService.confirm({
-      message: 'ลบรายการนี้',
-      icon: PrimeIcons.TRASH,
-      acceptLabel: 'ตกลง',
-      rejectLabel: 'ยกเลิก',
-      acceptButtonStyleClass: 'p-button-sm p-button-danger',
-      rejectButtonStyleClass: 'p-button-sm p-button-secondary',
-      dismissableMask: true,
+      ...ConfirmDeleteConfig,
       accept: () => {
         this.hotelService.delete(id)
           .subscribe(() => {

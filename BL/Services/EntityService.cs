@@ -1,13 +1,15 @@
 ﻿using BL.Data;
 using BL.Entities;
 using BL.Helpers;
+using BL.Helpers.Attributes;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
+using System.Reflection;
 
 namespace BL.Services
 {
     internal class EntityService<TKey, TEntity, TReadDTO, TCreateDTO, TUpdateDto, TQueryDto> : IEntityService<TKey, TEntity, TReadDTO, TCreateDTO, TUpdateDto, TQueryDto>, IDisposable
+        where TKey : IEquatable<TKey>
         where TEntity : class, IAuditable
     {
         protected readonly DbSet<TEntity> _entties;
@@ -25,9 +27,11 @@ namespace BL.Services
             return result;
         }
 
-        public virtual int GetCount()
+        public virtual int GetCount(TQueryDto queryDto)
         {
-            var count = _entties.Count();
+            var queryManager = new QueryManager<TEntity, TQueryDto>();
+            var query = queryManager.GetQuery(_entties, queryDto);
+            var count = query.Count();
             return count;
         }
 
@@ -41,8 +45,8 @@ namespace BL.Services
         {
             var queryManager = new QueryManager<TEntity, TQueryDto>();
             var query = queryManager.GetQuery(_entties, queryDto);
-            var result = query.Skip(lazyLoad.First).Take(lazyLoad.Rows).ToList();
-            return result.Adapt<List<TReadDTO>>();
+            var result = query.Skip(lazyLoad.First).Take(lazyLoad.Rows).ProjectToType<TReadDTO>().ToList();
+            return result;
         }
 
         public virtual TReadDTO Get(TKey id)
@@ -58,6 +62,20 @@ namespace BL.Services
             _entties.Add(entity);
             _context.SaveChanges();
             return entity.Adapt<TReadDTO>();
+        }
+
+        private PropertyInfo? GetDbSetProperty(Type entity)
+        {
+            var genericDbSetType = typeof(DbSet<>);
+            // typeof(DbSet<User.Role>);
+            var entityDbSetType = genericDbSetType.MakeGenericType(entity);
+
+            // DbContext type
+            var contextType = _context.GetType();
+
+            return contextType
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.PropertyType == entityDbSetType).FirstOrDefault();
         }
 
         public virtual TReadDTO AddUnsave(TEntity entity)

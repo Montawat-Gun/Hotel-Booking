@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
-    public class HotelController : EntityController<int, Hotel, ReadHotelDto, CreateHotelDto, UpdateHotelDto, QueryHotelDto>
+    public class HotelController : EntityController<int, Hotel, ReadHotelDto, CreateUpdateHotelDto, CreateUpdateHotelDto, QueryHotelDto>
     {
         public HotelController(IHotelService hotel) : base(hotel)
         {

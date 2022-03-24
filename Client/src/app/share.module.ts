@@ -9,6 +9,11 @@ import { TableModule } from 'primeng/table';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { SkeletonModule } from 'primeng/skeleton';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { TagModule } from 'primeng/tag';
+import { CalendarModule } from 'primeng/calendar';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @NgModule({
   declarations: [],
@@ -25,6 +30,11 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     ToolbarModule,
     ToastModule,
     ConfirmDialogModule,
+    SkeletonModule,
+    DynamicDialogModule,
+    TagModule,
+    CalendarModule,
+    InputNumberModule,
   ]
 })
 export class ShareModule { }

@@ -10,5 +10,7 @@ namespace BL.Entities
         [Required]
         [StringLength(100)]
         public string Name { get; set; }
+
+        public List<Booking> Booking { get; set; }
     }
 }

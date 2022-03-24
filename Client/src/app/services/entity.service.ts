@@ -15,9 +15,8 @@ export class EntityService<TKey, TReadDto, TCreateUpdateDto, TSearchDto> {
 
   getList(criteria: TSearchDto) {
     let params = new HttpParams();
-    console.log(criteria);
     Object.keys(criteria).forEach(function (key) {
-      if ((criteria as any)[key] !== null && (criteria as any)[key] !== undefined && key !== 'filters')
+      if ((criteria as any)[key] != null && (criteria as any)[key] != undefined && key !== 'filters')
         params = params.append(key, (criteria as any)[key]);
     });
     return this.http.get<LazyLoadResult<TReadDto[]>>(this.url, { params: params });
@@ -28,7 +27,7 @@ export class EntityService<TKey, TReadDto, TCreateUpdateDto, TSearchDto> {
   }
 
   createUpdateDto(id: TKey, data: TCreateUpdateDto) {
-    if (id !== null) {
+    if (id == null) {
       return this.http.post<TReadDto>(this.url, data);
     }
     else {

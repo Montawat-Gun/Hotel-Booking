@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BL.Data;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Entities
 {
     public class Booking : Auditable
     {
+        public long PrimaryKey { get => Id; }
+
         [Key]
         public long Id { get; set; }
 
@@ -30,9 +29,15 @@ namespace BL.Entities
         public decimal Price { get; set; }
 
         [Required]
+        [ForeignKey("Hotel")]
+        public int HotelId { get; set; }
+
         public Hotel Hotel { get; set; }
 
         [Required]
+        [ForeignKey("Status")]
+        public int StatusId { get; set; }
+
         public Status Status { get; set; }
     }
 }

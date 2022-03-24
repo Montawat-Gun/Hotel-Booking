@@ -5,7 +5,7 @@ namespace BL.Services
     public interface IEntityService<TKey, TEntity, TReadDTO, TCreateDTO, TUpdateDto, TQueryDto>
     {
         public TEntity FindById(TKey id);
-        public int GetCount();
+        public int GetCount(TQueryDto queryDto);
         public List<TReadDTO> GetList();
         public List<TReadDTO> GetList(LazyloadDto lazyload, TQueryDto queryDto);
         public TReadDTO Get(TKey id);

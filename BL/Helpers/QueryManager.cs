@@ -15,9 +15,18 @@ namespace BL.Helpers
             foreach (var property in properties)
             {
                 var attribute = property.GetCustomAttributes(typeof(QueryAttribute), false).Cast<QueryAttribute>().FirstOrDefault();
+                var name = attribute.Name;
                 var operation = attribute!.Operation;
                 var valueExp = Expression.Constant(property.GetValue(queryDto), property.GetValue(queryDto)!.GetType());
-                var propertyExp = Expression.Property(param, property.Name);
+                MemberExpression propertyExp;
+                if (name is not null)
+                {
+                    propertyExp = Expression.Property(param, name);
+                }
+                else
+                {
+                    propertyExp = Expression.Property(param, property.Name);
+                }
                 MethodInfo method;
                 Expression expr;
                 switch (operation)
@@ -86,8 +95,7 @@ namespace BL.Helpers
             else if (predicates.Count > 1)
             {
                 expression = predicates.Aggregate(
-                    (prev, current) => Expression.And(prev, current)
-                );
+                    (prev, current) => Expression.And(prev, current));
             }
             else
             {

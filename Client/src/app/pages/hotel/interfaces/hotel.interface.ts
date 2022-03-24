@@ -6,11 +6,9 @@ export interface IHotel {
 	provinceId?: number;
 	amphureId?: number;
 	tumbolId?: number;
+	createDateDesc?:string;
+	updateDateDesc?:string;
 }
 
 export interface IHotelCriteria extends IHotel, LazyLoadEvent {
-	// first: number;
-	// rows: number;
-	// sortField: string;
-	// sortOrder: number;
 }

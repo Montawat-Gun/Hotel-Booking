@@ -135,7 +135,7 @@ namespace BL.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("BL.Entities.Status", "Status")
-                        .WithMany()
+                        .WithMany("Booking")
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -146,6 +146,11 @@ namespace BL.Data.Migrations
                 });
 
             modelBuilder.Entity("BL.Entities.Hotel", b =>
+                {
+                    b.Navigation("Booking");
+                });
+
+            modelBuilder.Entity("BL.Entities.Status", b =>
                 {
                     b.Navigation("Booking");
                 });

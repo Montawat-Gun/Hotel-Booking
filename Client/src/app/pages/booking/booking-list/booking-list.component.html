@@ -1,0 +1,131 @@
+<p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+
+<p-card class="m-3" [header]="hotelData.name ? hotelData.name : 'Booking'">
+	<booking-search-form #searchForm (searchEvent)="onSearch($event)"></booking-search-form>
+</p-card>
+
+<p-card class="align-items-center">
+	<p-toolbar styleClass="">
+		<ng-template pTemplate="right">
+			<button pButton pRipple label="เพิ่ม" icon="pi pi-plus" class="button-sm" (click)="onOpenAdd()"></button>
+		</ng-template>
+	</p-toolbar>
+
+	<p-table [columns]="cols" dataKey="id" [value]="virtualData" [scrollable]="true" [rows]="rows" scrollHeight="450px"
+		[virtualScroll]="true" [virtualRowHeight]="40" [lazy]="true" (onLazyLoad)="onLoadLazy($event)"
+		[loading]="loading" [totalRecords]="count" styleClass="p-datatable-striped w-full" editMode="row">
+		<ng-template pTemplate="header" let-columns>
+			<tr>
+				<th class="text-center"><span>ชื่อ</span></th>
+				<th class="text-center"><span>นามสกุล</span></th>
+				<th class="text-center"><span>วันที่พัก</span></th>
+				<th class="text-center"><span>วันที่ออก</span></th>
+				<th class="text-center"><span>ราคา</span></th>
+				<th class="text-center"><span>สถานะ</span></th>
+				<th class="text-center" style="width: 50px"><span>จัดการ</span></th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-data let-editing="editing" let-ri="rowIndex">
+			<tr [pEditableRow]="data" style="height:65px">
+				<td class="text-center">
+					<p-cellEditor>
+						<ng-template pTemplate="input">
+							<input class="p-inputtext-sm w-full" pInputText type="text" [(ngModel)]="data.firstName">
+						</ng-template>
+						<ng-template pTemplate="output">
+							{{data.firstName}}
+						</ng-template>
+					</p-cellEditor>
+				</td>
+				<td>
+					<p-cellEditor>
+						<ng-template pTemplate="input">
+							<input class="p-inputtext-sm w-full" pInputText type="text" [(ngModel)]="data.lastName">
+						</ng-template>
+						<ng-template pTemplate="output">
+							{{data.lastName}}
+						</ng-template>
+					</p-cellEditor>
+				</td>
+				<td style="width: 500px;">
+					<p-cellEditor>
+						<ng-template pTemplate="input">
+							<p-calendar class="p-inputtext-sm w-full" [(ngModel)]="data.checkIn" appendTo="body">
+							</p-calendar>
+						</ng-template>
+						<ng-template pTemplate="output">
+							{{data.checkInDateDesc}}
+						</ng-template>
+					</p-cellEditor>
+				</td>
+				<td style="width: 500px;">
+					<p-cellEditor>
+						<ng-template pTemplate="input">
+							<p-calendar class="p-inputtext-sm w-full" [(ngModel)]="data.checkOut" appendTo="body">
+							</p-calendar>
+						</ng-template>
+						<ng-template pTemplate="output">
+							{{data.checkOutDateDesc}}
+						</ng-template>
+					</p-cellEditor>
+				</td>
+				<td>
+					<p-cellEditor>
+						<ng-template pTemplate="input">
+							<p-inputNumber class="p-inputtext-sm w-full" inputId="price" [(ngModel)]="data.price">
+							</p-inputNumber>
+						</ng-template>
+						<ng-template pTemplate="output">
+							{{data.price | number}}
+						</ng-template>
+					</p-cellEditor>
+				</td>
+				<td>
+					<p-cellEditor>
+						<ng-template pTemplate="input">
+							<p-dropdown class="p-inputtext-sm w-full" [options]="statuses" optionValue="id"
+								optionLabel="name" [(ngModel)]="data.status.id"></p-dropdown>
+						</ng-template>
+						<ng-template pTemplate="output">
+							<p-tag styleClass="mr-2" [severity]="data.status.color" [value]="data.status.name"
+								[rounded]="true">
+							</p-tag>
+						</ng-template>
+					</p-cellEditor>
+				</td>
+
+				<td class="text-center" style="width: 50px">
+					<button *ngIf="!editing" [disabled]="data.status.id === 4 || data.status.id === 3" pButton pRipple
+						pInitEditableRow icon="pi pi-pencil" class="p-button-rounded p-button-sm mr-2"
+						(click)="onEditInit()">
+					</button>
+					<button *ngIf="!editing" pButton pRipple icon="pi pi-trash"
+						class="p-button-rounded p-button-danger button-sm" (click)="onDelete(data.id)">
+					</button>
+					<button *ngIf="editing" pButton pRipple icon="pi pi-check" class="p-button-rounded p-button-sm mr-2"
+						(click)="onSaveEdit(data)">
+					</button>
+					<button *ngIf="editing" pButton pRipple pCancelEditableRow icon="pi pi-times"
+						class="p-button-rounded p-button-danger button-sm" (click)="onCancelEdit(data)">
+					</button>
+					<button #btnCancelEdit *ngIf="editing" pButton pRipple pCancelEditableRow icon="pi pi-times"
+						class="hidden">
+					</button>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage">
+			<tr class="">
+				<td class="text-center"><span class="text-secondary">ไม่มีข้อมูล</span></td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="loadingbody" let-columns="columns">
+			<tr style="height:65px">
+				<td *ngFor="let col of columns">
+					<div class="loading-text"></div>
+					<p-skeleton [ngStyle]="{'width': '100%'}"></p-skeleton>
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+</p-card>

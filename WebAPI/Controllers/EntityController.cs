@@ -19,7 +19,7 @@ namespace WebAPI.Controllers
         public virtual ActionResult<LazyLoadResult<List<TReadDTO>>> GetList([FromQuery] LazyloadDto lazyload, [FromQuery] TQueryDto queryDto)
         {
             var data = _entity.GetList(lazyload, queryDto);
-            var count = _entity.GetCount();
+            var count = _entity.GetCount(queryDto);
             var result = new LazyLoadResult<List<TReadDTO>>(count, data);
             return Ok(result);
         }
@@ -53,13 +53,13 @@ namespace WebAPI.Controllers
             }
 
             var model = modelDto.Adapt<TEntity>();
-            var properties = model.GetType().GetProperties();
+            var properties = modelDto.GetType().GetProperties();
             foreach (var property in properties)
             {
                 var p = entity.GetType().GetProperty(property.Name);
                 if (p is not null)
                 {
-                    p.SetValue(entity, property.GetValue(model));
+                    p.SetValue(entity, property.GetValue(modelDto));
                 }
             }
             var result = _entity.Update(entity);

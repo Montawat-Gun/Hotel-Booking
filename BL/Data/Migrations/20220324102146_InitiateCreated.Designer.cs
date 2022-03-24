@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BL.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220323125516_InitiateCreated")]
+    [Migration("20220324102146_InitiateCreated")]
     partial class InitiateCreated
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -137,7 +137,7 @@ namespace BL.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("BL.Entities.Status", "Status")
-                        .WithMany()
+                        .WithMany("Booking")
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -148,6 +148,11 @@ namespace BL.Data.Migrations
                 });
 
             modelBuilder.Entity("BL.Entities.Hotel", b =>
+                {
+                    b.Navigation("Booking");
+                });
+
+            modelBuilder.Entity("BL.Entities.Status", b =>
                 {
                     b.Navigation("Booking");
                 });

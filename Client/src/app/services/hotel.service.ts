@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IHotel, IHotelCriteria } from '../pages/hotel/component/hotel-search-form/interfaces/hotel.interface';
+import { IHotel, IHotelCriteria } from '../pages/hotel/interfaces/hotel.interface';
 import { EntityService } from './entity.service';
 
 @Injectable({

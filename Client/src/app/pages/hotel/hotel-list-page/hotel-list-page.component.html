@@ -4,31 +4,37 @@
 	<hotel-search-form #searchForm (searchEvent)="onSearch($event)"></hotel-search-form>
 </p-card>
 
-<p-card class="">
-
-	<p-toolbar styleClass="mb-1">
+<p-card class="align-items-center">
+	<p-toolbar styleClass="">
 		<ng-template pTemplate="right">
-			<button pButton pRipple label="New" icon="pi pi-plus" class="button-sm" routerLink="add"></button>
+			<button pButton pRipple label="เพิ่ม" icon="pi pi-plus" class="button-sm" routerLink="add"></button>
 		</ng-template>
 	</p-toolbar>
 
-	<p-table [columns]="cols" [resizableColumns]="true" [autoLayout]="false" [value]="data" [scrollable]="true"
-		[rows]="rows" [totalRecords]="totalRecords" scrollHeight="450px" [virtualScroll]="true" [virtualRowHeight]="40" [lazy]="true"
-		 (onLazyLoad)="onLoadLazy($event)">
+	<p-table [columns]="cols" dataKey="id" [resizableColumns]="true" [autoLayout]="true" [value]="virtualData"
+		[scrollable]="true" [rows]="rows" scrollHeight="450px" [virtualScroll]="true" [virtualRowHeight]="40"
+		[lazy]="true" (onLazyLoad)="onLoadLazy($event)" [loading]="loading" [totalRecords]="count" styleClass="p-datatable-striped">
 		<ng-template pTemplate="header" let-columns>
 			<tr>
 				<th class="text-center"><span>ชื่อโรงแรม</span></th>
 				<th class="text-center"><span>ที่อยู่</span></th>
+				<th class="text-center"><span>วันที่สร้าง</span></th>
+				<th class="text-center"><span>วันที่แก้ไข</span></th>
 				<th class="text-center" style="width: 50px"><span>จัดการ</span></th>
 			</tr>
 		</ng-template>
 		<ng-template pTemplate="body" let-data let-columns="columns">
-			<tr>
+			<tr style="height:65px">
 				<td class="text-center">{{data.name}}</td>
 				<td class="text-center">{{data.address}}</td>
+				<td class="text-center">{{data.createDateDesc}}</td>
+				<td class="text-center">{{data.updateDateDesc}}</td>
 				<td class="text-center" style="width: 50px">
+					<button pButton pRipple icon="pi pi-cog" class="p-button-rounded p-button-warning p-button-sm mr-2"
+						[routerLink]="['booking',data.id]">
+					</button>
 					<button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-sm mr-2"
-						[routerLink]="'edit/' + data.id">
+						[routerLink]="['edit/',data.id]">
 					</button>
 					<button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger button-sm"
 						(click)="onDelete(data.id)">
@@ -36,8 +42,13 @@
 				</td>
 			</tr>
 		</ng-template>
+		<ng-template pTemplate="emptymessage">
+			<tr class="">
+				<td class="text-center"><span class="text-secondary">ไม่มีข้อมูล</span></td>
+			</tr>
+		</ng-template>
 		<ng-template pTemplate="loadingbody" let-columns="columns">
-			<tr style="height:40px">
+			<tr style="height:65px">
 				<td *ngFor="let col of columns">
 					<div class="loading-text"></div>
 					<p-skeleton [ngStyle]="{'width': '100%'}"></p-skeleton>

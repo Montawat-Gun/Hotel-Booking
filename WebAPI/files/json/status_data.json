@@ -1,0 +1,14 @@
+[
+	{
+		"name": "BOOKING"
+	},
+	{
+		"name": "CHECKIN"
+	},
+	{
+		"name": "CHECKOUT"
+	},
+	{
+		"name": "CANCEL"
+	}
+]

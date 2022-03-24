@@ -16,6 +16,11 @@ import { MessageService } from "primeng/api";
 import { DialogService } from "primeng/dynamicdialog";
 import { ConfirmationService } from 'primeng/api';
 import { InputTextComponent } from './components/input-text/input-text.component';
+import { HotelEditFormComponent } from './pages/hotel/component/hotel-edit-form/hotel-edit-form.component';
+import { BookingListComponent } from './pages/booking/booking-list/booking-list.component';
+import { BookingEditComponent } from './pages/booking/booking-edit/booking-edit.component';
+import { BookingSearchFormComponent } from './pages/booking/components/booking-search-form/booking-search-form.component';
+import { ErrorInterceptor } from './helpers/error.interceptor';
 
 @NgModule({
   declarations: [
@@ -24,6 +29,10 @@ import { InputTextComponent } from './components/input-text/input-text.component
     HotelEditPageComponent,
     HotelSearchFormComponent,
     InputTextComponent,
+    HotelEditFormComponent,
+    BookingListComponent,
+    BookingEditComponent,
+    BookingSearchFormComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,6 +49,7 @@ import { InputTextComponent } from './components/input-text/input-text.component
     DialogService,
     ConfirmationService,
     { provide: HTTP_INTERCEPTORS, useClass: BaseUrlInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })
