@@ -93,7 +93,7 @@ export class HotelListPageComponent implements OnInit {
   customSort(event: SortEvent) {
     this.saerchData.sortField = event.field;
     this.saerchData.sortOrder = event.order;
-    this.loading = true;
+    this.criteria$.next(this.saerchData);
   }
 
   onLoadLazy(event: LazyLoadEvent) {
