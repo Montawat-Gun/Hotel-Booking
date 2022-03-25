@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
-import { ConfirmationService, LazyLoadEvent, MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationService, LazyLoadEvent, MenuItem, MessageService, SortEvent } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { finalize, map, Observable, Subject, switchMap } from 'rxjs';
 import { ConfirmDeleteConfig, ConfirmSaveConfig, DefualtLazyloadConfig } from 'src/app/app.config';
@@ -57,7 +57,6 @@ export class BookingListComponent implements OnInit {
   ngOnInit(): void {
     if (this.route.snapshot.paramMap.has('id')) {
       this.hotelId = Number(this.route.snapshot.paramMap.get('id'));
-      console.log(this.route.snapshot.data['data'])
       this.hotelData = this.route.snapshot.data['data'].data;
     }
 
@@ -140,7 +139,14 @@ export class BookingListComponent implements OnInit {
     searchData.rows = this.rows;
     this.loading = true;
     this.saerchData = searchData;
+    searchData.hotelId = this.hotelId;
     this.criteria$.next(searchData);
+  }
+
+  customSort(event: SortEvent) {
+    this.saerchData.sortField = event.field;
+    this.saerchData.sortOrder = event.order;
+    this.loading = true;
   }
 
   onLoadLazy(event: LazyLoadEvent) {

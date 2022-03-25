@@ -1,6 +1,7 @@
 ﻿using BL.Helpers.Attributes;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Linq.Dynamic.Core;
 
 namespace BL.Helpers
 {
@@ -108,6 +109,23 @@ namespace BL.Helpers
             var genericMethod = whereMethod.MakeGenericMethod(typeof(TEntity));
             var newQuery = (IQueryable<TEntity>)genericMethod.Invoke(genericMethod, new object[] { source, whereClause })!;
             return newQuery;
+        }
+
+        public IQueryable<TEntity> GetOrder(IQueryable<TEntity> source, LazyloadDto lazyload)
+        {
+            var property = typeof(TEntity).GetProperties().FirstOrDefault(x => x.Name.ToUpper() == lazyload.SortField.ToUpper());
+            if (property is null)
+            {
+                return source;
+            }
+            if (lazyload.SortOrder > 0)
+            {
+                return source.OrderBy(property.Name);
+            }
+            else
+            {
+                return source.OrderBy(property.Name + " desc");
+            }
         }
     }
 }

@@ -13,6 +13,9 @@ export class ErrorInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError((err: HttpErrorResponse) => {
+            if (err.status === 0 && err.error instanceof ProgressEvent) {
+                this.messageService.add({ severity: 'error', summary: 'เกิดข้อผิดพลาดในการเชื่อมต่อ Server' });
+            }
             if ((err.status === 400 || err.status === 404) && err.error) {
                 this.messageService.add({ severity: 'error', summary: err.error.error_description || err.error });
             }

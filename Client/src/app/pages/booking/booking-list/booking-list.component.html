@@ -13,15 +13,32 @@
 
 	<p-table [columns]="cols" dataKey="id" [value]="virtualData" [scrollable]="true" [rows]="rows" scrollHeight="450px"
 		[virtualScroll]="true" [virtualRowHeight]="40" [lazy]="true" (onLazyLoad)="onLoadLazy($event)"
-		[loading]="loading" [totalRecords]="count" styleClass="p-datatable-striped w-full" editMode="row">
+		[loading]="loading" styleClass="p-datatable-striped w-full" editMode="row" (onSort)="customSort($event)"
+		[customSort]="true">
 		<ng-template pTemplate="header" let-columns>
 			<tr>
-				<th class="text-center"><span>ชื่อ</span></th>
-				<th class="text-center"><span>นามสกุล</span></th>
-				<th class="text-center"><span>วันที่พัก</span></th>
-				<th class="text-center"><span>วันที่ออก</span></th>
-				<th class="text-center"><span>ราคา</span></th>
-				<th class="text-center"><span>สถานะ</span></th>
+				<th class="text-center" pSortableColumn="firstName">
+					<span>ชื่อ</span>
+					<p-sortIcon field="firstName"></p-sortIcon>
+				</th>
+				<th class="text-center" pSortableColumn="lastName">
+					<span>นามสกุล</span>
+					<p-sortIcon field="lastName"></p-sortIcon>
+				</th>
+				<th class="text-center">
+					<span>วันที่พัก</span>
+				</th>
+				<th class="text-center">
+					<span>วันที่ออก</span>
+				</th>
+				<th class="text-center" pSortableColumn="price">
+					<span>ราคา</span>
+					<p-sortIcon field="price"></p-sortIcon>
+				</th>
+				<th class="text-center" pSortableColumn="statusId">
+					<span>สถานะ</span>
+					<p-sortIcon field="statusId"></p-sortIcon>
+				</th>
 				<th class="text-center" style="width: 50px"><span>จัดการ</span></th>
 			</tr>
 		</ng-template>
@@ -84,7 +101,7 @@
 					<p-cellEditor>
 						<ng-template pTemplate="input">
 							<p-dropdown class="p-inputtext-sm w-full" [options]="statuses" optionValue="id"
-								optionLabel="name" [(ngModel)]="data.status.id"></p-dropdown>
+								optionLabel="name" [(ngModel)]="data.status.id" appendTo="body"></p-dropdown>
 						</ng-template>
 						<ng-template pTemplate="output">
 							<p-tag styleClass="mr-2" [severity]="data.status.color" [value]="data.status.name"

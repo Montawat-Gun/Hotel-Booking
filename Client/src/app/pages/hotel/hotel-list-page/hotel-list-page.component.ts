@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ConfirmationService, LazyLoadEvent, MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationService, LazyLoadEvent, MenuItem, MessageService, SortEvent } from 'primeng/api';
 import { IHotel, IHotelCriteria } from 'src/app/pages/hotel/interfaces/hotel.interface';
 import { HotelService } from 'src/app/services/hotel.service';
 import { HotelSearchFormComponent } from '../component/hotel-search-form/hotel-search-form.component';
@@ -88,6 +88,12 @@ export class HotelListPageComponent implements OnInit {
     this.loading = true;
     this.saerchData = searchData;
     this.criteria$.next(searchData);
+  }
+
+  customSort(event: SortEvent) {
+    this.saerchData.sortField = event.field;
+    this.saerchData.sortOrder = event.order;
+    this.loading = true;
   }
 
   onLoadLazy(event: LazyLoadEvent) {

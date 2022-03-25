@@ -1,7 +1,6 @@
 ﻿using BL.Data;
 using BL.DTOs;
 using BL.Entities;
-using Mapster;
 
 namespace BL.Services
 {
@@ -9,12 +8,6 @@ namespace BL.Services
     {
         public BookingService(DataContext context) : base(context)
         {
-        }
-
-        public override ReadBookingDto Get(long id)
-        {
-            var result = _entties.ProjectToType<ReadBookingDto>().Where(x => x.Id == id).FirstOrDefault();
-            return result;
         }
     }
 }

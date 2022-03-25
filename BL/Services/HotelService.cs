@@ -17,9 +17,9 @@ namespace BL.Services
             var province = _provinceService.GetProviceById(entity.ProvinceId);
             var amphure = _provinceService.GetAmphureById(entity.AmphureId);
             var tumbol = _provinceService.GetTumbolById(entity.TumbolId);
-            var tumbolName = tumbol.Name is null ? "" : tumbol.Name;
-            var amphureName = amphure.Name is null ? "" : amphure.Name;
-            var provinceName = province.Name is null ? "" : province.Name;
+            var tumbolName = string.IsNullOrEmpty(tumbol!.Name) ? "" : tumbol.Name;
+            var amphureName = string.IsNullOrEmpty(amphure!.Name) ? "" : amphure.Name;
+            var provinceName = string.IsNullOrEmpty(province!.Name) ? "" : province.Name;
             entity.Address = $"{tumbolName} / {amphureName} / {provinceName}";
             return base.Add(entity);
         }
@@ -29,9 +29,9 @@ namespace BL.Services
             var province = _provinceService.GetProviceById(entity.ProvinceId);
             var amphure = _provinceService.GetAmphureById(entity.AmphureId);
             var tumbol = _provinceService.GetTumbolById(entity.TumbolId);
-            var tumbolName = tumbol.Name is null ? "" : tumbol.Name;
-            var amphureName = amphure.Name is null ? "" : amphure.Name;
-            var provinceName = province.Name is null ? "" : province.Name;
+            var tumbolName = string.IsNullOrEmpty(tumbol!.Name) ? "" : tumbol.Name;
+            var amphureName = string.IsNullOrEmpty(amphure!.Name) ? "" : amphure.Name;
+            var provinceName = string.IsNullOrEmpty(province!.Name) ? "" : province.Name;
             entity.Address = $"{tumbolName} / {amphureName} / {provinceName}";
             return base.Update(entity);
         }

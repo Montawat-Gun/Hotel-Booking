@@ -4,7 +4,7 @@ using BL.Helpers;
 using BL.Helpers.Attributes;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
+using System.Linq.Dynamic.Core;
 
 namespace BL.Services
 {
@@ -45,14 +45,23 @@ namespace BL.Services
         {
             var queryManager = new QueryManager<TEntity, TQueryDto>();
             var query = queryManager.GetQuery(_entties, queryDto);
-            var result = query.Skip(lazyLoad.First).Take(lazyLoad.Rows).ProjectToType<TReadDTO>().ToList();
+            query = queryManager.GetOrder(query, lazyLoad);
+            var result = query.Skip((int)lazyLoad.First!).Take((int)lazyLoad.Rows!)
+                .ProjectToType<TReadDTO>().ToList();
             return result;
         }
 
         public virtual TReadDTO Get(TKey id)
         {
-            var result = _entties.Find(id);
-            return result.Adapt<TReadDTO>();
+            var fieldInfo = typeof(TEntity).GetProperties().Where(x => x.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.KeyAttribute), false) is not null).FirstOrDefault();
+            TReadDTO result;
+            if(fieldInfo is null)
+            {
+                result = _entties.Find().Adapt<TReadDTO>();
+                return result;
+            }
+            result = _entties.ProjectToType<TReadDTO>().FirstOrDefault(fieldInfo.Name + "==" + id.ToString());
+            return result;
         }
 
         public virtual TReadDTO Add(TEntity entity)
@@ -62,20 +71,6 @@ namespace BL.Services
             _entties.Add(entity);
             _context.SaveChanges();
             return entity.Adapt<TReadDTO>();
-        }
-
-        private PropertyInfo? GetDbSetProperty(Type entity)
-        {
-            var genericDbSetType = typeof(DbSet<>);
-            // typeof(DbSet<User.Role>);
-            var entityDbSetType = genericDbSetType.MakeGenericType(entity);
-
-            // DbContext type
-            var contextType = _context.GetType();
-
-            return contextType
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.PropertyType == entityDbSetType).FirstOrDefault();
         }
 
         public virtual TReadDTO AddUnsave(TEntity entity)

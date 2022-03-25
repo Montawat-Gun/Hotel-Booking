@@ -1,12 +1,10 @@
-﻿using BL.Data;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Entities
 {
     public class Booking : Auditable
     {
-        public long PrimaryKey { get => Id; }
 
         [Key]
         public long Id { get; set; }

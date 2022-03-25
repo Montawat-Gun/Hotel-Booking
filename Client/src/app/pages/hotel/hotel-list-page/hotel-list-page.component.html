@@ -13,10 +13,14 @@
 
 	<p-table [columns]="cols" dataKey="id" [resizableColumns]="true" [autoLayout]="true" [value]="virtualData"
 		[scrollable]="true" [rows]="rows" scrollHeight="450px" [virtualScroll]="true" [virtualRowHeight]="40"
-		[lazy]="true" (onLazyLoad)="onLoadLazy($event)" [loading]="loading" [totalRecords]="count" styleClass="p-datatable-striped">
+		[lazy]="true" (onLazyLoad)="onLoadLazy($event)" [loading]="loading" styleClass="p-datatable-striped"
+		(onSort)="customSort($event)" [customSort]="true">
 		<ng-template pTemplate="header" let-columns>
 			<tr>
-				<th class="text-center"><span>ชื่อโรงแรม</span></th>
+				<th class="text-center" pSortableColumn="name">
+					<span>ชื่อโรงแรม</span>
+					<p-sortIcon field="name"></p-sortIcon>
+				</th>
 				<th class="text-center"><span>ที่อยู่</span></th>
 				<th class="text-center"><span>วันที่สร้าง</span></th>
 				<th class="text-center"><span>วันที่แก้ไข</span></th>

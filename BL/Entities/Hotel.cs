@@ -1,5 +1,4 @@
-﻿using BL.Data;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BL.Entities
 {
