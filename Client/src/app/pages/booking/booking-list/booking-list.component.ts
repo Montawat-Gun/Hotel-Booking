@@ -133,10 +133,9 @@ export class BookingListComponent implements OnInit {
     if (searchData.checkOutTo) {
       searchData.checkOutTo = moment(searchData.checkOutTo).format("yyyy-MM-DD");
     }
-    this.first = DefualtLazyloadConfig.first;
-    this.rows = DefualtLazyloadConfig.rows;
-    searchData.first = this.first;
-    searchData.rows = this.rows;
+
+    searchData.first = this.first = DefualtLazyloadConfig.first;
+    searchData.rows = this.rows = DefualtLazyloadConfig.rows;
     this.loading = true;
     this.saerchData = searchData;
     searchData.hotelId = this.hotelId;
@@ -146,14 +145,14 @@ export class BookingListComponent implements OnInit {
   customSort(event: SortEvent) {
     this.saerchData.sortField = event.field;
     this.saerchData.sortOrder = event.order;
+    this.saerchData.rows = this.rows = DefualtLazyloadConfig.rows;
+    this.saerchData.first = this.first = DefualtLazyloadConfig.first;
     this.criteria$.next(this.saerchData);
   }
 
   onLoadLazy(event: LazyLoadEvent) {
-    this.first = Number(event.first);
-    this.rows = Number(event.rows);
-    this.saerchData.first = this.first;
-    this.saerchData.rows = this.rows;
+    this.first = this.saerchData.first = Number(event.first);
+    this.rows = this.saerchData.rows = Number(event.rows);
     this.saerchData.hotelId = this.hotelId;
     this.criteria$.next(this.saerchData);
   }

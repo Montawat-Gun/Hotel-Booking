@@ -11,7 +11,7 @@
 		</ng-template>
 	</p-toolbar>
 
-	<p-table [columns]="cols" dataKey="id" [value]="virtualData" [scrollable]="true" [rows]="rows" scrollHeight="450px"
+	<p-table [columns]="cols" dataKey="id" [value]="virtualData" [scrollable]="true" [rows]="10" scrollHeight="450px"
 		[virtualScroll]="true" [virtualRowHeight]="40" [lazy]="true" (onLazyLoad)="onLoadLazy($event)"
 		[loading]="loading" styleClass="p-datatable-striped w-full" editMode="row" (onSort)="customSort($event)"
 		[customSort]="true">
