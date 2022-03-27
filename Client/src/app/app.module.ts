@@ -15,7 +15,6 @@ import { HotelSearchFormComponent } from './pages/hotel/component/hotel-search-f
 import { MessageService } from "primeng/api";
 import { DialogService } from "primeng/dynamicdialog";
 import { ConfirmationService } from 'primeng/api';
-import { InputTextComponent } from './components/input-text/input-text.component';
 import { HotelEditFormComponent } from './pages/hotel/component/hotel-edit-form/hotel-edit-form.component';
 import { BookingListComponent } from './pages/booking/booking-list/booking-list.component';
 import { BookingEditComponent } from './pages/booking/booking-edit/booking-edit.component';
@@ -28,7 +27,6 @@ import { ErrorInterceptor } from './helpers/error.interceptor';
     HotelListPageComponent,
     HotelEditPageComponent,
     HotelSearchFormComponent,
-    InputTextComponent,
     HotelEditFormComponent,
     BookingListComponent,
     BookingEditComponent,

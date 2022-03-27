@@ -1,5 +1,0 @@
-<label [for]="name">ชื่อโรงแรม</label>
-<input [id]="name" pInputText type="text" [name]="name" class="w-full p-inputtext-sm inputfield"
-	autocomplete="none" placeholder="ชื่อห้องพัก" 
-	[ngClass]="{ 'ng-invalid ng-dirty': isSubmited && validator }" maxlength="100" [formControlName]="name"/>
-<small *ngIf="isSubmited && validator" [id]="name + '-help'" class="p-error block">กรุณากรอกชื่อโรงแรม</small>
