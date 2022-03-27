@@ -35,8 +35,11 @@ export class BookingListComponent implements OnInit {
   criteria$ = new Subject<IBookingCriteria>();
 
   count!: number;
+  defualtRow: number = DefualtLazyloadConfig.rows;
   first: number = DefualtLazyloadConfig.first;
   rows: number = DefualtLazyloadConfig.rows;
+
+  selectedValues: IBooking[] = [];
 
   loading: boolean = false;
   saerchData: IBookingCriteria = {
@@ -110,14 +113,16 @@ export class BookingListComponent implements OnInit {
 
     this.search$
       .subscribe((res) => {
-        this.count = res.count;
-        this.virtualData = Array.from({ length: this.count });
+        if (!this.count || this.count !== res.count) {
+          this.count = res.count;
+          this.virtualData = Array.from({ length: this.count });
+        }
         if (this.rows >= this.count) {
           this.rows == this.count;
         }
         this.virtualData.splice(this.first, this.rows, ...res.data);
         this.virtualData = [...this.virtualData];
-      })
+      });
   }
 
   onSearch(searchData: IBookingCriteria) {
@@ -172,6 +177,10 @@ export class BookingListComponent implements OnInit {
     });
   }
 
+  onSelectionChange(values: IBooking[]) {
+    this.selectedValues = values;
+  }
+
   onEditInit() {
     this.btnCancelEdit?.nativeElement.click();
   }
@@ -196,6 +205,22 @@ export class BookingListComponent implements OnInit {
 
   onCancelEdit(data: IBooking) {
     this.criteria$.next(this.saerchData);
+  }
+
+  onDeleteItems() {
+    let confirmOptions = ConfirmDeleteConfig;
+    confirmOptions.message = `ลบ ${this.selectedValues.length} รายการ`
+    this.confirmationService.confirm({
+      ...confirmOptions,
+      accept: () => {
+        this.bookingService.deleteRange(this.selectedValues.filter(x => x.id).map(x => x.id!))
+          .subscribe(() => {
+            this.searchForm.onSearch();
+            this.selectedValues = [];
+            this.messageService.add({ severity: 'success', summary: 'บันทึกสำเร็จ' });
+          });
+      }
+    });
   }
 
   onDelete(id: number) {

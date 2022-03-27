@@ -14,4 +14,8 @@ export class BookingService extends EntityService<number, IBooking, IBooking, IB
     const url: string = 'Booking/';
     super(url, http);
   }
+
+  deleteRange(keys: number[]) {
+    return this.http.post(this.url + 'deleteRange', { data: keys });
+  }
 }

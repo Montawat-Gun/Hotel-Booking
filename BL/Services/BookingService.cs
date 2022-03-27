@@ -9,5 +9,12 @@ namespace BL.Services
         public BookingService(DataContext context) : base(context)
         {
         }
+
+        public void DeleteRange(long[] keys)
+        {
+            var booking = _entties.Where(x => keys.Contains(x.Id)).ToList();
+            _entties.RemoveRange(booking);
+            _context.SaveChanges();
+        }
     }
 }

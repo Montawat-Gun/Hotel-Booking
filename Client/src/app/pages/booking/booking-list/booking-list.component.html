@@ -5,18 +5,23 @@
 </p-card>
 
 <p-card class="align-items-center">
-	<p-toolbar styleClass="">
-		<ng-template pTemplate="right">
-			<button pButton pRipple label="เพิ่ม" icon="pi pi-plus" class="button-sm" (click)="onOpenAdd()"></button>
-		</ng-template>
+	<p-toolbar styleClass="flex">
+		<button pButton pRipple label="เพิ่ม" icon="pi pi-plus" class="button-sm" (click)="onOpenAdd()"></button>
+		<div class="flex align-items-center" *ngIf="selectedValues.length > 0">
+			<span class="align-items-center  mr-2">เลือก : {{selectedValues.length}} รายการ</span>
+			<button pButton pRipple label="ลบรายการที่เลือก" icon="pi pi-trash" class="button-sm p-button-danger"
+				(click)="onDeleteItems()"></button>
+		</div>
 	</p-toolbar>
 
-	<p-table [columns]="cols" dataKey="id" [value]="virtualData" [scrollable]="true" [rows]="10" scrollHeight="450px"
-		[virtualScroll]="true" [virtualRowHeight]="40" [lazy]="true" (onLazyLoad)="onLoadLazy($event)"
+	<p-table [columns]="cols" dataKey="id" [value]="virtualData" [scrollable]="true" [rows]="defualtRow"
+		scrollHeight="450px" [virtualScroll]="true" [virtualRowHeight]="40" [lazy]="true"
+		(onLazyLoad)="onLoadLazy($event)" [selection]="selectedValues" (selectionChange)="onSelectionChange($event)"
 		[loading]="loading" styleClass="p-datatable-striped w-full" editMode="row" (onSort)="customSort($event)"
 		[customSort]="true">
 		<ng-template pTemplate="header" let-columns>
 			<tr>
+				<th style="width: 50px"></th>
 				<th class="text-center" pSortableColumn="firstName">
 					<span>ชื่อ</span>
 					<p-sortIcon field="firstName"></p-sortIcon>
@@ -44,6 +49,9 @@
 		</ng-template>
 		<ng-template pTemplate="body" let-data let-editing="editing" let-ri="rowIndex">
 			<tr [pEditableRow]="data" style="height:65px">
+				<td>
+					<p-tableCheckbox [value]="data"></p-tableCheckbox>
+				</td>
 				<td class="text-center">
 					<p-cellEditor>
 						<ng-template pTemplate="input">
@@ -116,14 +124,14 @@
 						pInitEditableRow icon="pi pi-pencil" class="p-button-rounded p-button-sm mr-2"
 						(click)="onEditInit()">
 					</button>
-					<button *ngIf="!editing" pButton pRipple icon="pi pi-trash"
+					<!-- <button *ngIf="!editing" pButton pRipple icon="pi pi-trash"
 						class="p-button-rounded p-button-danger button-sm" (click)="onDelete(data.id)">
-					</button>
-					<button *ngIf="editing" pButton pRipple icon="pi pi-check" class="p-button-rounded p-button-sm mr-2"
-						(click)="onSaveEdit(data)">
-					</button>
+					</button> -->					
 					<button *ngIf="editing" pButton pRipple pCancelEditableRow icon="pi pi-times"
-						class="p-button-rounded p-button-danger button-sm" (click)="onCancelEdit(data)">
+						class="p-button-rounded p-button-danger button-sm mr-2" (click)="onCancelEdit(data)">
+					</button>
+					<button *ngIf="editing" pButton pRipple icon="pi pi-check" class="p-button-rounded p-button-sm"
+						(click)="onSaveEdit(data)">
 					</button>
 					<button #btnCancelEdit *ngIf="editing" pButton pRipple pCancelEditableRow icon="pi pi-times"
 						class="hidden">

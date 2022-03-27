@@ -9,7 +9,7 @@ import { LazyLoadResult } from '../interfaces/lazyload.interface';
 export class EntityService<TKey, TReadDto, TCreateUpdateDto, TSearchDto> {
 
   constructor(
-    @Inject(String) private url: string,
+    @Inject(String) protected url: string,
     protected http: HttpClient,
   ) { }
 

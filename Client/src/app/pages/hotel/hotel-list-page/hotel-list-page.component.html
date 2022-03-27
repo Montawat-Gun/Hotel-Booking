@@ -12,7 +12,7 @@
 	</p-toolbar>
 
 	<p-table [columns]="cols" dataKey="id" [resizableColumns]="true" [autoLayout]="true" [value]="virtualData"
-		[scrollable]="true" [rows]="rows" scrollHeight="450px" [virtualScroll]="true" [virtualRowHeight]="40"
+		[scrollable]="true" [rows]="defualtRow" scrollHeight="450px" [virtualScroll]="true" [virtualRowHeight]="40"
 		[lazy]="true" (onLazyLoad)="onLoadLazy($event)" [loading]="loading" styleClass="p-datatable-striped"
 		(onSort)="customSort($event)" [customSort]="true">
 		<ng-template pTemplate="header" let-columns>

@@ -26,6 +26,7 @@ export class HotelListPageComponent implements OnInit {
   criteria$ = new Subject<IHotelCriteria>();
 
   count!: number;
+  defualtRow: number = DefualtLazyloadConfig.rows;
   first: number = DefualtLazyloadConfig.first;
   rows: number = DefualtLazyloadConfig.rows;
 
@@ -70,8 +71,10 @@ export class HotelListPageComponent implements OnInit {
 
     this.search$
       .subscribe((res) => {
-        this.count = res.count;
-        this.virtualData = Array.from({ length: this.count });
+        if (!this.count || this.count !== res.count) {
+          this.count = res.count;
+          this.virtualData = Array.from({ length: this.count });
+        }
         if (this.rows >= this.count) {
           this.rows == this.count;
         }

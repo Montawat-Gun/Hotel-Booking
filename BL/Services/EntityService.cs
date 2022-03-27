@@ -1,7 +1,6 @@
 ﻿using BL.Data;
 using BL.Entities;
 using BL.Helpers;
-using BL.Helpers.Attributes;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
@@ -55,7 +54,7 @@ namespace BL.Services
         {
             var fieldInfo = typeof(TEntity).GetProperties().Where(x => x.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.KeyAttribute), false) is not null).FirstOrDefault();
             TReadDTO result;
-            if(fieldInfo is null)
+            if (fieldInfo is null)
             {
                 result = _entties.Find().Adapt<TReadDTO>();
                 return result;
