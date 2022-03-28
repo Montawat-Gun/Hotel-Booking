@@ -42,6 +42,7 @@ export class BookingListComponent implements OnInit {
   selectedValues: IBooking[] = [];
 
   loading: boolean = false;
+  reload: boolean = true;
   saerchData: IBookingCriteria = {
     hotelId: this.hotelId,
     first: 0,
@@ -113,9 +114,11 @@ export class BookingListComponent implements OnInit {
 
     this.search$
       .subscribe((res) => {
-        if (!this.count || this.count !== res.count) {
+        if (this.reload) {
           this.count = res.count;
           this.virtualData = Array.from({ length: this.count });
+          this.selectedValues = [];
+          this.reload = false;
         }
         if (this.rows >= this.count) {
           this.rows == this.count;
@@ -141,6 +144,7 @@ export class BookingListComponent implements OnInit {
 
     searchData.first = this.first = DefualtLazyloadConfig.first;
     searchData.rows = this.rows = DefualtLazyloadConfig.rows;
+    this.reload = true;
     this.loading = true;
     this.saerchData = searchData;
     searchData.hotelId = this.hotelId;
@@ -148,6 +152,7 @@ export class BookingListComponent implements OnInit {
   }
 
   customSort(event: SortEvent) {
+    this.reload = true;
     this.saerchData.sortField = event.field;
     this.saerchData.sortOrder = event.order;
     this.saerchData.rows = this.rows = DefualtLazyloadConfig.rows;
@@ -215,8 +220,8 @@ export class BookingListComponent implements OnInit {
       accept: () => {
         this.bookingService.deleteRange(this.selectedValues.filter(x => x.id).map(x => x.id!))
           .subscribe(() => {
+            this.reload = true;
             this.searchForm.onSearch();
-            this.selectedValues = [];
             this.messageService.add({ severity: 'success', summary: 'บันทึกสำเร็จ' });
           });
       }

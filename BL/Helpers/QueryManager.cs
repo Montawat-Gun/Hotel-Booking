@@ -113,19 +113,23 @@ namespace BL.Helpers
 
         public IQueryable<TEntity> GetOrder(IQueryable<TEntity> source, LazyloadDto lazyload)
         {
-            var property = typeof(TEntity).GetProperties().FirstOrDefault(x => x.Name.ToUpper() == lazyload.SortField.ToUpper());
-            if (property is null)
+            if (!string.IsNullOrEmpty(lazyload.SortField))
             {
-                return source;
+                var property = typeof(TEntity).GetProperties().FirstOrDefault(x => x.Name.ToUpper() == lazyload.SortField.ToUpper());
+                if (property is null)
+                {
+                    return source;
+                }
+                if (lazyload.SortOrder > 0)
+                {
+                    return source.OrderBy(property.Name);
+                }
+                else
+                {
+                    return source.OrderBy(property.Name + " desc");
+                }
             }
-            if (lazyload.SortOrder > 0)
-            {
-                return source.OrderBy(property.Name);
-            }
-            else
-            {
-                return source.OrderBy(property.Name + " desc");
-            }
+            return source;
         }
     }
 }
