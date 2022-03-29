@@ -1,0 +1,12 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="form">
+    <div class="grid">
+        <div [ngClass]="'col-' + option.columnConfig!.columnSize + ' md:col-' + option.columnConfig!.columnSizeMd + ' lg:col-' + option.columnConfig!.columnSizeLg"
+            *ngFor="let input of option.inputs">
+            <dynamic-form-input [input]="input" [form]="form" [isSubmited]="submited!"></dynamic-form-input>
+        </div>
+    </div>
+    <p-button *ngIf="option.showCancelButton" [label]="option.cancelButtonText!" type="button"
+        styleClass="p-button-secondary mr-2" (click)="onCancel()"></p-button>
+    <p-button *ngIf="option.showSubmitButton" type="submit" [label]="option.submitButtonText!" [loading]="loading">
+    </p-button>
+</form>

@@ -7,8 +7,8 @@ import { HotelResolver } from './pages/hotel/hotel.resolver';
 
 const routes: Routes = [
   { path: '', component: HotelListPageComponent, pathMatch: 'full' },
-  { path: 'add', component: HotelEditPageComponent, },
-  { path: 'edit/:id', component: HotelEditPageComponent, resolve: { data: HotelResolver } },
+  { path: 'add', component: HotelEditPageComponent },
+  { path: 'edit/:id', component: HotelEditPageComponent },
   { path: 'booking/:id', component: BookingListComponent, resolve: { data: HotelResolver } },
 ];
 

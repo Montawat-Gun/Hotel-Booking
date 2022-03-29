@@ -2,10 +2,15 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, LazyLoadEvent, MenuItem, MessageService, SortEvent } from 'primeng/api';
 import { IHotel, IHotelCriteria } from 'src/app/pages/hotel/interfaces/hotel.interface';
 import { HotelService } from 'src/app/services/hotel.service';
-import { HotelSearchFormComponent } from '../component/hotel-search-form/hotel-search-form.component';
-import { finalize, Observable, Subject, switchMap } from 'rxjs';
+import { finalize, Observable, Subject, switchMap, tap } from 'rxjs';
 import { LazyLoadResult } from 'src/app/interfaces/lazyload.interface';
 import { ConfirmDeleteConfig, DefualtLazyloadConfig } from 'src/app/app.config';
+import { DropdownInput } from 'src/app/helpers/inputs/dropdown-input';
+import { BaseInput } from 'src/app/helpers/inputs/base-input';
+import { TextInput } from 'src/app/helpers/inputs/text-input';
+import { ProvinceService } from 'src/app/services/province.service';
+import { IDynamicForm } from 'src/app/components/dynamic-form/interfaces/dynamic-form.interface';
+import { DynamicFormComponent } from 'src/app/components/dynamic-form/dynamic-form.component';
 
 @Component({
   selector: 'app-hotel-list-page',
@@ -13,7 +18,7 @@ import { ConfirmDeleteConfig, DefualtLazyloadConfig } from 'src/app/app.config';
   styleUrls: ['./hotel-list-page.component.scss']
 })
 export class HotelListPageComponent implements OnInit {
-  @ViewChild('searchForm', { static: false }) searchForm!: HotelSearchFormComponent;
+  @ViewChild('dynamicForm', { static: false }) dynamicForm!: DynamicFormComponent;
 
   breadcrumbItems: MenuItem[] = [];
 
@@ -30,14 +35,52 @@ export class HotelListPageComponent implements OnInit {
   first: number = DefualtLazyloadConfig.first;
   rows: number = DefualtLazyloadConfig.rows;
 
+  reload: boolean = true;
   loading: boolean = false;
   saerchData: IHotelCriteria = {
     first: 0,
     rows: 5,
   };
 
+  inputs: BaseInput[] = [
+    new TextInput({
+      key: 'name',
+      label: 'ชื่อโรงแรม',
+    }),
+    new DropdownInput({
+      key: 'provinceId',
+      label: 'จังหวัด',
+      placeholder: 'กรุณาเลือกจังหวัด',
+      showClear: true,
+      filter: true,
+      filterBy: 'name',
+      onChange: (e) => this.onProvinceChange(e)
+    }),
+    new DropdownInput({
+      key: 'amphureId',
+      label: 'อำเภอ',
+      disabled: true,
+      placeholder: 'กรุณาเลือกอำเภอ',
+      showClear: true,
+      onChange: (e) => this.onAmphureChange()
+    }),
+    new DropdownInput({
+      key: 'tumbolId',
+      label: 'ตำบล',
+      disabled: true,
+      showClear: true,
+      placeholder: 'กรุณาเลือกตำบล',
+    }),
+  ];
+
+  option: IDynamicForm = {
+    inputs: this.inputs,
+    submitButtonText: "ค้นหา",
+  }
+
   constructor(
-    private hotelService: HotelService,
+    public hotelService: HotelService,
+    private provinceService: ProvinceService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
   ) { }
@@ -48,13 +91,13 @@ export class HotelListPageComponent implements OnInit {
       { label: 'Hotel' },
     ];
 
-    this.cols = [
-      { field: '', header: '' },
-      { field: '', header: '' },
-      { field: '', header: '' },
-      { field: '', header: '' },
-      { field: '', header: '' },
-    ];
+    this.provinceService.getProvinces()
+      .subscribe((res) => {
+        const values = res.map(x => { return { key: x.id, value: x.name } });
+        this.dynamicForm.setOptions('provinceId', values);
+      });
+
+    this.cols = Array(5).fill({ field: '', header: '' });
 
     this.loading = true;
     this.search$ = this.criteria$
@@ -71,9 +114,10 @@ export class HotelListPageComponent implements OnInit {
 
     this.search$
       .subscribe((res) => {
-        if (!this.count || this.count !== res.count) {
+        if (this.reload) {
           this.count = res.count;
           this.virtualData = Array.from({ length: this.count });
+          this.reload = false;
         }
         if (this.rows >= this.count) {
           this.rows == this.count;
@@ -81,9 +125,41 @@ export class HotelListPageComponent implements OnInit {
         this.virtualData.splice(this.first, this.rows, ...res.data);
         this.virtualData = [...this.virtualData];
       })
+
+
+  }
+
+  onProvinceChange(e: any) {
+    const provinceId = this.dynamicForm.getData.provinceId;
+    if (provinceId)
+      this.provinceService.getAmphures(provinceId)
+        .subscribe((res) => {
+          const values = res.map(x => { return { key: x.id, value: x.name } });
+          this.dynamicForm.setData({
+            amphureId: null,
+            tumbolId: null
+          });
+          this.dynamicForm.setOptions('amphureId', values);
+          this.dynamicForm.setEnable('amphureId');
+        })
+  }
+
+  onAmphureChange() {
+    const amphureId = this.dynamicForm.getData.amphureId;
+    if (amphureId)
+      this.provinceService.getTumbols(amphureId)
+        .subscribe((res) => {
+          const values = res.map(x => { return { key: x.id, value: x.name } });
+          this.dynamicForm.setData({
+            tumbolId: null
+          });
+          this.dynamicForm.setOptions('tumbolId', values);
+          this.dynamicForm.setEnable("tumbolId")
+        })
   }
 
   onSearch(searchData: IHotelCriteria) {
+    this.reload = true;
     searchData.first = this.first = DefualtLazyloadConfig.first;
     searchData.rows = this.rows = DefualtLazyloadConfig.rows;
     this.loading = true;
@@ -92,6 +168,7 @@ export class HotelListPageComponent implements OnInit {
   }
 
   customSort(event: SortEvent) {
+    this.reload = true;
     this.saerchData.sortField = event.field;
     this.saerchData.sortOrder = event.order;
     this.saerchData.rows = this.rows = DefualtLazyloadConfig.rows;
@@ -111,7 +188,7 @@ export class HotelListPageComponent implements OnInit {
       accept: () => {
         this.hotelService.delete(id)
           .subscribe(() => {
-            this.searchForm.onSearch();
+            this.onSearch(this.saerchData);
             this.messageService.add({ severity: 'success', summary: 'บันทึกสำเร็จ' });
           });
       }

@@ -8,11 +8,11 @@ import { EntityService } from './entity.service';
 })
 export class BookingService extends EntityService<number, IBooking, IBooking, IBookingCriteria>{
 
+  override url: string = 'Booking/';
   constructor(
     protected override http: HttpClient,
   ) {
-    const url: string = 'Booking/';
-    super(url, http);
+    super(http);
   }
 
   deleteRange(keys: number[]) {

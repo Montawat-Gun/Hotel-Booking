@@ -1,7 +1,8 @@
 <p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
 
 <p-card class="m-3" [header]="hotelData.name ? hotelData.name : 'Booking'">
-	<booking-search-form #searchForm (searchEvent)="onSearch($event)"></booking-search-form>
+	<dynamic-form #dynamicForm [option]="formOption" [loading]="loading" (submitEvent)="onSearch($event)"
+		(cancelEvent)="onBack()"></dynamic-form>
 </p-card>
 
 <p-card class="align-items-center">
@@ -126,7 +127,7 @@
 					</button>
 					<!-- <button *ngIf="!editing" pButton pRipple icon="pi pi-trash"
 						class="p-button-rounded p-button-danger button-sm" (click)="onDelete(data.id)">
-					</button> -->					
+					</button> -->
 					<button *ngIf="editing" pButton pRipple pCancelEditableRow icon="pi pi-times"
 						class="p-button-rounded p-button-danger button-sm mr-2" (click)="onCancelEdit(data)">
 					</button>

@@ -1,7 +1,7 @@
 <p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
 
 <p-card class="m-3" header="Hotel">
-	<hotel-search-form #searchForm (searchEvent)="onSearch($event)"></hotel-search-form>
+	<dynamic-form #dynamicForm [option]="option" [loading]="loading" (submitEvent)="onSearch($event)"></dynamic-form>
 </p-card>
 
 <p-card class="align-items-center">

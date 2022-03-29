@@ -1,6 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
 import { LazyLoadResult } from '../interfaces/lazyload.interface';
 
 @Injectable({
@@ -8,8 +7,8 @@ import { LazyLoadResult } from '../interfaces/lazyload.interface';
 })
 export class EntityService<TKey, TReadDto, TCreateUpdateDto, TSearchDto> {
 
+  protected url!: string;
   constructor(
-    @Inject(String) protected url: string,
     protected http: HttpClient,
   ) { }
 

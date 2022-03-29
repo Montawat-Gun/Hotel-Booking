@@ -11,26 +11,24 @@ import { BaseUrlInterceptor } from './helpers/base-url.interceptor';
 import { ShareModule } from './share.module';
 import { HotelListPageComponent } from './pages/hotel/hotel-list-page/hotel-list-page.component';
 import { HotelEditPageComponent } from './pages/hotel/hotel-edit-page/hotel-edit-page.component';
-import { HotelSearchFormComponent } from './pages/hotel/component/hotel-search-form/hotel-search-form.component';
 import { MessageService } from "primeng/api";
 import { DialogService } from "primeng/dynamicdialog";
 import { ConfirmationService } from 'primeng/api';
-import { HotelEditFormComponent } from './pages/hotel/component/hotel-edit-form/hotel-edit-form.component';
 import { BookingListComponent } from './pages/booking/booking-list/booking-list.component';
 import { BookingEditComponent } from './pages/booking/booking-edit/booking-edit.component';
-import { BookingSearchFormComponent } from './pages/booking/components/booking-search-form/booking-search-form.component';
 import { ErrorInterceptor } from './helpers/error.interceptor';
+import { DynamicFormComponent } from './components/dynamic-form/dynamic-form.component';
+import { DynamicFormInputComponent } from './components/dynamic-form-input/dynamic-form-input.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HotelListPageComponent,
     HotelEditPageComponent,
-    HotelSearchFormComponent,
-    HotelEditFormComponent,
     BookingListComponent,
     BookingEditComponent,
-    BookingSearchFormComponent,
+    DynamicFormInputComponent,
+    DynamicFormComponent,
   ],
   imports: [
     BrowserModule,

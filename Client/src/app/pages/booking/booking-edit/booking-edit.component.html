@@ -1,60 +1,7 @@
-<form [formGroup]="formEdit" (ngSubmit)="onSave()">
-	<div class="grid">
-		<div class="field col">
-			<label for="firstName">ชื่อ</label>
-			<input id="firstName" pInputText type="text" name="firstName" class="w-full inputfield" autocomplete="none"
-				formControlName="firstName" [ngClass]="{ 'ng-invalid ng-dirty': isSubmited && f['firstName'].errors }"
-				maxlength="200" />
-			<small *ngIf="isSubmited && f['firstName'].errors" id="firstName-help"
-				class="p-error block">กรุณากรอกชื่อ</small>
-		</div>
-		<div class="field col">
-			<label for="lastName">นามสกุล</label>
-			<input id="lastName" pInputText type="text" name="lastName" class="w-full inputfield" autocomplete="none"
-				formControlName="lastName" [ngClass]="{ 'ng-invalid ng-dirty': isSubmited && f['lastName'].errors }"
-				maxlength="200" />
-			<small *ngIf="isSubmited && f['lastName'].errors" id="lastName-help"
-				class="p-error block">กรุณากรอกชื่อนามสกุล</small>
-		</div>
-	</div>
-	<div class="grid">
-		<div class="field col">
-			<label for="checkIn">วันที่เข้าพัก</label>
-			<p-calendar inputId="checkIn" id="checkIn" styleClass="w-full" appendTo="body" formControlName="checkIn"
-				[ngClass]="{ 'ng-invalid ng-dirty': isSubmited && f['checkIn'].errors }">
-			</p-calendar>
-			<small *ngIf="isSubmited && f['checkIn'].errors" id="checkIn-help"
-				class="p-error block">กรุณาเลือกวันที่เข้าพัก</small>
-		</div>
-		<div class="field col">
-			<label for="checkOut">วันที่ออก</label>
-			<p-calendar inputId="checkOut" id="checkOut" styleClass="w-full" appendTo="body" formControlName="checkOut"
-				[ngClass]="{ 'ng-invalid ng-dirty': isSubmited && f['checkOut'].errors }">
-			</p-calendar>
-			<small *ngIf="isSubmited && f['checkOut'].errors" id="checkOut-help"
-				class="p-error block">กรุณาเลือกวันที่ออก</small>
-		</div>
-	</div>
-	<div class="grid">
-		<div class="field col">
-			<label for="price">ราคา</label>
-			<p-inputNumber class="w-full" styleClass="w-full" inputId="price" formControlName="price"
-				[ngClass]="{ 'ng-invalid ng-dirty': isSubmited && f['price'].errors }"></p-inputNumber>
-			<small *ngIf="isSubmited && f['price'].errors" id="price-help" class="p-error block">กรุณากรอกราคา</small>
-		</div>
-		<div class="field col">
-			<label for="status">สถานะ</label>
-			<p-dropdown styleClass="w-full" [options]="statuses" optionValue="id" optionLabel="name"
-				placeholder="กรุณาเลือกสถานะ" formControlName="statusId"
-				[ngClass]="{ 'ng-invalid ng-dirty': isSubmited && f['statusId'].errors }">
-			</p-dropdown>
-			<small *ngIf="isSubmited && f['statusId'].errors" id="status-help"
-				class="p-error block">กรุณาเลือกสถานะ</small>
-		</div>
-	</div>
+<dynamic-form #dynamicForm [option]="formOption" [loading]="loading" (submitEvent)="onSave($event)"
+	(cancelEvent)="onBack()"></dynamic-form>
 
-	<div class="p-dialog-footer">
-		<button pButton label="ยกเลิก" type="button" class="p-button-sm p-button-secondary" (click)="onBack()"></button>
-		<button pButton label="บันทึก" type="submit" class="p-button-sm" [loading]="isLoading"></button>
-	</div>
-</form>
+<div class="p-dialog-footer">
+	<button pButton label="ยกเลิก" type="button" class="p-button-sm p-button-secondary" (click)="onBack()"></button>
+	<button pButton label="บันทึก" type="button" class="p-button-sm" [loading]="loading" (click)="onSubmit()"></button>
+</div>

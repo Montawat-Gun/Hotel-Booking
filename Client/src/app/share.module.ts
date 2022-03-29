@@ -14,6 +14,7 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { TagModule } from 'primeng/tag';
 import { CalendarModule } from 'primeng/calendar';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { KeyFilterModule } from 'primeng/keyfilter';
 
 @NgModule({
   declarations: [],
@@ -35,6 +36,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
     TagModule,
     CalendarModule,
     InputNumberModule,
+    KeyFilterModule,
   ]
 })
 export class ShareModule { }

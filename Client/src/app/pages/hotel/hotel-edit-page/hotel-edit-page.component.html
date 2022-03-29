@@ -1,5 +1,5 @@
 <p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
 
 <p-card class="m-3" header="{{id ? 'แก้ไข' : 'เพิ่ม'}}">
-	<hotel-edit-form></hotel-edit-form>
+	<dynamic-form #dynamicForm [option]="formOption" [loading]="loading" (submitEvent)="onSave($event)" (cancelEvent)="onBack()"></dynamic-form>
 </p-card>

@@ -1,16 +1,22 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { ConfirmationService, LazyLoadEvent, MenuItem, MessageService, SortEvent } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { finalize, map, Observable, Subject, switchMap } from 'rxjs';
 import { ConfirmDeleteConfig, ConfirmSaveConfig, DefualtLazyloadConfig } from 'src/app/app.config';
+import { DynamicFormComponent } from 'src/app/components/dynamic-form/dynamic-form.component';
+import { IDynamicForm } from 'src/app/components/dynamic-form/interfaces/dynamic-form.interface';
+import { BaseInput } from 'src/app/helpers/inputs/base-input';
+import { CalendarInput } from 'src/app/helpers/inputs/calendar-input';
+import { DropdownInput } from 'src/app/helpers/inputs/dropdown-input';
+import { NumberInput } from 'src/app/helpers/inputs/number-input';
+import { TextInput } from 'src/app/helpers/inputs/text-input';
 import { LazyLoadResult } from 'src/app/interfaces/lazyload.interface';
 import { BookingService } from 'src/app/services/booking.service';
 import { IHotel } from '../../hotel/interfaces/hotel.interface';
 import { BookingEditComponent } from '../booking-edit/booking-edit.component';
-import { BookingSearchFormComponent } from '../components/booking-search-form/booking-search-form.component';
 import { IBooking, IBookingCriteria } from '../interfaces/booking.interface';
 import { IStatus } from '../interfaces/status.interface';
 
@@ -20,7 +26,7 @@ import { IStatus } from '../interfaces/status.interface';
   styleUrls: ['./booking-list.component.scss']
 })
 export class BookingListComponent implements OnInit {
-  @ViewChild('searchForm', { static: false }) searchForm!: BookingSearchFormComponent;
+  @ViewChild('dynamicForm', { static: false }) dynamicForm!: DynamicFormComponent;
   @ViewChild('btnCancelEdit') btnCancelEdit!: ElementRef;
   breadcrumbItems: MenuItem[] = [];
 
@@ -49,6 +55,59 @@ export class BookingListComponent implements OnInit {
     rows: 5,
   };
 
+  inputs: BaseInput[] = [
+    new TextInput({
+      key: 'firstName',
+      label: 'ชื่อ',
+    }),
+    new TextInput({
+      key: 'lastName',
+      label: 'นามสกุล',
+    }),
+    new NumberInput({
+      key: 'fromPrice',
+      value: null,
+      label: 'ราคาตั้งแต่',
+    }),
+    new NumberInput({
+      key: 'toPrice',
+      value: null,
+      label: 'ถึงราคา',
+    }),
+    new CalendarInput({
+      key: 'checkInFrom',
+      label: 'Check In ตั้งแต่',
+    }),
+    new CalendarInput({
+      key: 'checkInTo',
+      label: 'ถึงวันที่',
+    }),
+    new CalendarInput({
+      key: 'checkOutFrom',
+      label: 'Check Out ตั้งแต่',
+    }),
+    new CalendarInput({
+      key: 'checkOutTo',
+      label: 'ถึงวันที่',
+    }),
+    new DropdownInput({
+      key: 'statusId',
+      label: 'สถานะ',
+    }),
+  ];
+
+  formOption: IDynamicForm = {
+    columnConfig: {
+      columnSize: 12,
+      columnSizeMd: 6,
+      columnSizeLg: 3
+    },
+    inputs: this.inputs,
+    submitButtonText: 'ค้นหา',
+    showCancelButton: true,
+    cancelButtonText: 'ย้อนกลับ'
+  }
+
   constructor(
     private bookingService: BookingService,
     private confirmationService: ConfirmationService,
@@ -56,6 +115,7 @@ export class BookingListComponent implements OnInit {
     private route: ActivatedRoute,
     private http: HttpClient,
     public dialogService: DialogService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -65,7 +125,12 @@ export class BookingListComponent implements OnInit {
     }
 
     this.http.get<IStatus[]>('values/getStatuses')
-      .subscribe((res) => this.statuses = res);
+      .subscribe((res) => {
+        this.statuses = res;
+        const statuses = res.map(x => { return { key: x.id, value: x.name } });
+        statuses.unshift({ key: null, value: 'ทั้งหมด' });
+        this.dynamicForm.setOptions('statusId', statuses);
+      });
 
     this.breadcrumbItems = [
       { icon: 'pi pi-home', routerLink: '/' },
@@ -73,15 +138,7 @@ export class BookingListComponent implements OnInit {
       { label: 'Booking' },
     ];
 
-    this.cols = [
-      { field: '', header: '' },
-      { field: '', header: '' },
-      { field: '', header: '' },
-      { field: '', header: '' },
-      { field: '', header: '' },
-      { field: '', header: '' },
-      { field: '', header: '' },
-    ];
+    this.cols = Array(7).fill({ field: '', header: '' });
 
     this.loading = true;
     this.search$ = this.criteria$
@@ -177,7 +234,7 @@ export class BookingListComponent implements OnInit {
 
     ref.onClose.subscribe((result: boolean) => {
       if (result) {
-        this.searchForm.onSearch();
+        this.onSearch(this.saerchData);
       }
     });
   }
@@ -201,7 +258,7 @@ export class BookingListComponent implements OnInit {
           .pipe(finalize(() => this.loading = false))
           .subscribe(() => {
             this.btnCancelEdit?.nativeElement.click();
-            this.searchForm.onSearch();
+            this.onSearch(this.saerchData);
             this.messageService.add({ severity: 'success', summary: 'บันทึกสำเร็จ' });
           });
       }
@@ -221,7 +278,7 @@ export class BookingListComponent implements OnInit {
         this.bookingService.deleteRange(this.selectedValues.filter(x => x.id).map(x => x.id!))
           .subscribe(() => {
             this.reload = true;
-            this.searchForm.onSearch();
+            this.onSearch(this.saerchData);
             this.messageService.add({ severity: 'success', summary: 'บันทึกสำเร็จ' });
           });
       }
@@ -234,11 +291,15 @@ export class BookingListComponent implements OnInit {
       accept: () => {
         this.bookingService.delete(id)
           .subscribe(() => {
-            this.searchForm.onSearch();
+            this.onSearch(this.saerchData);
             this.messageService.add({ severity: 'success', summary: 'บันทึกสำเร็จ' });
           });
       }
     })
+  }
+
+  onBack() {
+    this.router.navigate(['']);
   }
 
 }

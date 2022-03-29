@@ -1,8 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { finalize } from 'rxjs';
+import { DynamicFormComponent } from 'src/app/components/dynamic-form/dynamic-form.component';
+import { IDynamicForm } from 'src/app/components/dynamic-form/interfaces/dynamic-form.interface';
+import { BaseInput } from 'src/app/helpers/inputs/base-input';
+import { CalendarInput } from 'src/app/helpers/inputs/calendar-input';
+import { DropdownInput } from 'src/app/helpers/inputs/dropdown-input';
+import { NumberInput } from 'src/app/helpers/inputs/number-input';
+import { TextInput } from 'src/app/helpers/inputs/text-input';
 import { BookingService } from 'src/app/services/booking.service';
 import { IBooking } from '../interfaces/booking.interface';
 import { IStatus } from '../interfaces/status.interface';
@@ -13,49 +19,87 @@ import { IStatus } from '../interfaces/status.interface';
   styleUrls: ['./booking-edit.component.scss']
 })
 export class BookingEditComponent implements OnInit {
-  id!: number;
-  isSubmited: boolean = false;
-  isLoading: boolean = false;
+  @ViewChild('dynamicForm', { static: false }) dynamicForm!: DynamicFormComponent;
+
+  loading: boolean = false;
   hotelId!: number;
 
-  statuses: IStatus[] = [];
+  inputs: BaseInput[] = [
+    new TextInput({
+      key: 'firstName',
+      label: 'ชื่อ',
+      required: true,
+      errorText: 'กรุณากรอกชื่อ',
+    }),
+    new TextInput({
+      key: 'lastName',
+      label: 'นามสกุล',
+      required: true,
+      errorText: 'กรุณากรอกนามสกุล',
+    }),
+    new CalendarInput({
+      key: 'checkIn',
+      label: 'วันที่เข้าพัก',
+      required: true,
+      errorText: 'กรุณาเลือกวันที่เข้าพัก',
+    }),
+    new CalendarInput({
+      key: 'checkOut',
+      label: 'วันที่ออก',
+      required: true,
+      errorText: 'กรุณาเลือกวันที่ออก',
+    }),
+    new NumberInput({
+      key: 'price',
+      value: null,
+      label: 'ราคา',
+      required: true,
+      errorText: 'กรุณากรอกราคา',
+      max: 100000,
+      min: 0,
+    }),
+    new DropdownInput({
+      key: 'statusId',
+      label: 'สถานะ',
+      required: true,
+      errorText: 'กรุณาเลือกสถานะ',
+      placeholder: 'กรุณาเลือกสถานะ',
+    }),
+  ];
 
-  formEdit: FormGroup = new FormGroup({
-    firstName: new FormControl(null, Validators.required),
-    lastName: new FormControl(null, Validators.required),
-    checkIn: new FormControl(new Date(), Validators.required),
-    checkOut: new FormControl(new Date(), Validators.required),
-    price: new FormControl(null, Validators.required),
-    hotelId: new FormControl(null, Validators.required),
-    statusId: new FormControl(null, Validators.required),
-  });
+  formOption: IDynamicForm = {
+    inputs: this.inputs,
+    showSubmitButton: false,
+  }
 
   constructor(
     private bookingService: BookingService,
     private messageService: MessageService,
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
+    private cd: ChangeDetectorRef
   ) { }
 
-  get f() { return this.formEdit.controls; }
-
   ngOnInit(): void {
-    this.hotelId = this.config.data.hotelId;
-    this.statuses = this.config.data.statuses;
+
   }
 
-  onSave() {
-    this.formEdit.patchValue({
-      hotelId: this.hotelId,
-    });
-    if (this.formEdit.invalid) {
-      this.isSubmited = true;
-    return;
-    }
-    this.isLoading = true;
+  ngAfterViewInit() {
+    this.hotelId = this.config.data.hotelId;
+    let statuses = this.config.data.statuses as IStatus[];
+    this.dynamicForm.setOptions('statusId', statuses.map(x => { return { key: x.id!, value: x.name! } }));
+    this.cd.detectChanges();
+  }
 
-    this.bookingService.createUpdateDto(null!, this.formEdit.getRawValue())
-      .pipe(finalize(() => this.isLoading = false))
+  onSubmit() {
+    this.dynamicForm.onSubmit();
+  }
+
+  onSave(data: IBooking) {
+    data.hotelId = this.hotelId;
+    this.loading = true;
+    this.bookingService.createUpdateDto(null!, data)
+      .pipe(finalize(() => this.loading = false))
       .subscribe(() => {
         this.messageService.add({ severity: 'success', summary: 'บันทึกสำเร็จ' });
         this.ref.close(true);

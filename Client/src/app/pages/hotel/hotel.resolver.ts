@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import {
-  Router, Resolve,
-  RouterStateSnapshot,
+  Resolve,
   ActivatedRouteSnapshot
 } from '@angular/router';
-import { forkJoin, Observable, of } from 'rxjs';
-import { switchMap, mergeMap, map } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
+import { switchMap, map } from 'rxjs/operators';
 import { IAmphure, IProvince, ITumbol } from 'src/app/interfaces/province.interface';
 import { IHotel } from 'src/app/pages/hotel/interfaces/hotel.interface';
 import { HotelService } from 'src/app/services/hotel.service';
@@ -22,7 +21,7 @@ export class HotelResolver implements Resolve<{ data: IHotel, province: IProvinc
   ) {
   }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<{ data: IHotel, province: IProvince, amphure: IAmphure, tumbol: ITumbol }> {
+  resolve(route: ActivatedRouteSnapshot): Observable<{ data: IHotel, province: IProvince, amphure: IAmphure, tumbol: ITumbol }> {
     const obs = (data: IHotel) => {
       return {
         province: this.provinceService.getProvincesById(data.provinceId!),

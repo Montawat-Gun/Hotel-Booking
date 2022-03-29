@@ -1,0 +1,34 @@
+<div class="field" [formGroup]="form">
+    <label [attr.for]="input.key">{{input.label}}</label>
+
+    <div [ngSwitch]="input.controlType">
+        <input pInputText *ngSwitchCase="'textbox'" [class]="'w-full p-inputtext-sm inputfield ' + input.styleClass"
+            [autocomplete]="input.autocomplete" [ngClass]="{ 'ng-invalid ng-dirty': isSubmited && hasError }"
+            [maxlength]="input.maxlength" [formControlName]="input.key" [id]="input.key" [type]="input.type"
+            (ngModelChange)="onChange($event)">
+
+        <p-inputNumber *ngSwitchCase="'number'" [inputId]="input.key" [id]="input.key"
+            [autocomplete]="input.autocomplete" [class]="'w-full p-inputtext-sm ' + input.styleClass"
+            [styleClass]="'w-full p-inputtext-sm ' + input.styleClass"
+            [ngClass]="{ 'ng-invalid ng-dirty': isSubmited && hasError }" [formControlName]="input.key"
+            [min]="input.min" [max]="input.max" [prefix]="input.prefix" [suffix]="input.suffix"
+            [maxlength]="input.maxlength">
+        </p-inputNumber>
+
+        <p-dropdown *ngSwitchCase="'dropdown'" [inputId]="input.key" [id]="input.key"
+            [styleClass]="'w-full p-inputtext-sm ' + input.styleClass"
+            [ngClass]="{ 'ng-invalid ng-dirty': isSubmited && hasError }" [options]="input.options || []"
+            optionLabel="value" optionValue="key" [filter]="input.filter" [filterBy]="input.filterBy"
+            [formControlName]="input.key" [placeholder]="input.placeholder || ''"
+            [showClear]="input.showClear && getValue" (onChange)="onChange($event)">
+        </p-dropdown>
+
+        <p-calendar *ngSwitchCase="'calendar'" [inputId]="input.key" [id]="input.key" [class]="'' + input.styleClass"
+            [styleClass]="'w-full p-inputtext-sm ' + input.styleClass" appendTo="body"
+            [readonlyInput]="input.readonlyInput" [dateFormat]="input.dateFormat" [maxDate]="input.maxDate"
+            [minDate]="input.minDate" [formControlName]="input.key"
+            [ngClass]="{ 'ng-invalid ng-dirty': isSubmited && hasError }">
+        </p-calendar>
+    </div>
+    <small *ngIf="isSubmited && hasError" [id]="input.key + '-help'" class="p-error block">{{input.errorText}}</small>
+</div>
