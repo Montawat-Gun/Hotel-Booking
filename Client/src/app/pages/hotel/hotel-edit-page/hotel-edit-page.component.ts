@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { finalize } from 'rxjs';
@@ -29,32 +30,37 @@ export class HotelEditPageComponent implements OnInit {
     new TextInput({
       key: 'name',
       label: 'ชื่อโรงแรม',
-      required: true,
-      errorText: 'กรุณากรอกชื่อโรงแรม',
+      validators: [
+        { name: Validators.required.name, validator: Validators.required, message: 'กรุณากรอกชื่อโรงแรม' },
+        { name: Validators.pattern.name, validator: Validators.pattern('[a-zA-Z ]*'), message: 'กรอกได้แค่ตัวเลขและตัวอักษรอังกฤษ' },
+        { name: Validators.maxLength.name, validator: Validators.maxLength(50), message: 'กรอกได้ไม่เกิน 50 ตัวอักษร' },
+      ],
     }),
     new DropdownInput({
       key: 'provinceId',
       label: 'จังหวัด',
-      required: true,
-      errorText: 'กรุณาเลือกจังหวัด',
-      placeholder: 'กรุณาเลือกจังหวัด',
+      validators: [
+        { name: Validators.required.name, validator: Validators.required, message: 'กรุณาเลือกจังหวัด' },
+      ], placeholder: 'กรุณาเลือกจังหวัด',
       onChange: (e) => this.onProvinceChange(e)
     }),
     new DropdownInput({
       key: 'amphureId',
       label: 'อำเภอ',
-      required: true,
+      validators: [
+        { name: Validators.required.name, validator: Validators.required, message: 'กรุณาเลือกอำเภอ' },
+      ],
       disabled: true,
-      errorText: 'กรุณาเลือกอำเภอ',
       placeholder: 'กรุณาเลือกอำเภอ',
       onChange: (e) => this.onAmphureChange()
     }),
     new DropdownInput({
       key: 'tumbolId',
       label: 'ตำบล',
-      required: true,
+      validators: [
+        { name: Validators.required.name, validator: Validators.required, message: 'กรุณาเลือกตำบล' },
+      ],
       disabled: true,
-      errorText: 'กรุณาเลือกตำบล',
       placeholder: 'กรุณาเลือกตำบล',
     }),
   ];

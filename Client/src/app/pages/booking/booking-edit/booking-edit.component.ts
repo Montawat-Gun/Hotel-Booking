@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { finalize } from 'rxjs';
@@ -28,41 +29,47 @@ export class BookingEditComponent implements OnInit {
     new TextInput({
       key: 'firstName',
       label: 'ชื่อ',
-      required: true,
-      errorText: 'กรุณากรอกชื่อ',
+      validators: [
+        { name: Validators.required.name, validator: Validators.required, message: 'กรุณากรอกชื่อ' },
+      ],
     }),
     new TextInput({
       key: 'lastName',
       label: 'นามสกุล',
-      required: true,
-      errorText: 'กรุณากรอกนามสกุล',
+      validators: [
+        { name: Validators.required.name, validator: Validators.required, message: 'กรุณากรอกนามสกุล' },
+      ],
     }),
     new CalendarInput({
       key: 'checkIn',
       label: 'วันที่เข้าพัก',
-      required: true,
-      errorText: 'กรุณาเลือกวันที่เข้าพัก',
+      validators: [
+        { name: Validators.required.name, validator: Validators.required, message: 'กรุณาเลือกวันที่เข้าพัก' },
+      ],
     }),
     new CalendarInput({
       key: 'checkOut',
       label: 'วันที่ออก',
-      required: true,
-      errorText: 'กรุณาเลือกวันที่ออก',
+      validators: [
+        { name: Validators.required.name, validator: Validators.required, message: 'กรุณาเลือกวันที่ออก' },
+      ],
     }),
     new NumberInput({
       key: 'price',
       value: null,
       label: 'ราคา',
-      required: true,
-      errorText: 'กรุณากรอกราคา',
+      validators: [
+        { name: Validators.required.name, validator: Validators.required, message: 'กรุณากรอกราคา' },
+      ],
       max: 100000,
       min: 0,
     }),
     new DropdownInput({
       key: 'statusId',
       label: 'สถานะ',
-      required: true,
-      errorText: 'กรุณาเลือกสถานะ',
+      validators: [
+        { name: Validators.required.name, validator: Validators.required, message: 'กรุณาเลือกสถานะ' },
+      ],
       placeholder: 'กรุณาเลือกสถานะ',
     }),
   ];

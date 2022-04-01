@@ -30,5 +30,9 @@
             [ngClass]="{ 'ng-invalid ng-dirty': isSubmited && hasError }">
         </p-calendar>
     </div>
-    <small *ngIf="isSubmited && hasError" [id]="input.key + '-help'" class="p-error block">{{input.errorText}}</small>
+    <div class="block" *ngFor="let validator of input.validators">
+        <small *ngIf="isSubmited && getError(validator.name)" [id]="input.key + '-help'" class="p-error">
+            {{validator.message}}
+        </small>
+    </div>
 </div>

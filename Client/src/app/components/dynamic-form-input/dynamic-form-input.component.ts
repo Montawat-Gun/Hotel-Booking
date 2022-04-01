@@ -14,9 +14,14 @@ export class DynamicFormInputComponent implements OnInit {
   get getValue() { return this.form.controls[this.input.key].value }
   get hasError() { return this.form.controls[this.input.key].errors; }
 
+  getError(name: string) {
+    return this.form.get(this.input.key)!.getError(name) || this.form.get(this.input.key)!.getError(name.toLocaleLowerCase());
+  }
+
   constructor() { }
 
   ngOnInit(): void {
+    this.form.get(this.input.key)!.addValidators(this.input.validators.map((x: any) => x.validator));
   }
 
   onChange(e: any) {
