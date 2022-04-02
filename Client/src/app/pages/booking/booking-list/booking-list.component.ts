@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { ConfirmationService, LazyLoadEvent, MenuItem, MessageService, SortEvent } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
-import { finalize, map, Observable, Subject, switchMap } from 'rxjs';
+import { finalize, map, Observable, Subject, Subscription, switchMap } from 'rxjs';
 import { ConfirmDeleteConfig, ConfirmSaveConfig, DefualtLazyloadConfig } from 'src/app/app.config';
 import { DynamicFormComponent } from 'src/app/components/dynamic-form/dynamic-form.component';
 import { IDynamicForm } from 'src/app/components/dynamic-form/interfaces/dynamic-form.interface';
@@ -37,6 +37,7 @@ export class BookingListComponent implements OnInit {
 
   statuses: IStatus[] = [];
 
+  subscription$!: Subscription;
   search$!: Observable<LazyLoadResult<IBooking[]>>;
   criteria$ = new Subject<IBookingCriteria>();
 
@@ -169,7 +170,7 @@ export class BookingListComponent implements OnInit {
         ),
       );
 
-    this.search$
+    this.subscription$ = this.search$
       .subscribe((res) => {
         if (this.reload) {
           this.count = res.count;
@@ -183,6 +184,10 @@ export class BookingListComponent implements OnInit {
         this.virtualData.splice(this.first, this.rows, ...res.data);
         this.virtualData = [...this.virtualData];
       });
+  }
+
+  ngOnDestroy() {
+    this.subscription$.unsubscribe();
   }
 
   onSearch(searchData: IBookingCriteria) {

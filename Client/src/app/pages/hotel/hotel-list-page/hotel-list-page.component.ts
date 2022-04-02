@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, LazyLoadEvent, MenuItem, MessageService, SortEvent } from 'primeng/api';
 import { IHotel, IHotelCriteria } from 'src/app/pages/hotel/interfaces/hotel.interface';
 import { HotelService } from 'src/app/services/hotel.service';
-import { finalize, Observable, Subject, switchMap, tap } from 'rxjs';
+import { finalize, Observable, Subject, Subscription, switchMap, tap } from 'rxjs';
 import { LazyLoadResult } from 'src/app/interfaces/lazyload.interface';
 import { ConfirmDeleteConfig, DefualtLazyloadConfig } from 'src/app/app.config';
 import { DropdownInput } from 'src/app/helpers/inputs/dropdown-input';
@@ -27,6 +27,7 @@ export class HotelListPageComponent implements OnInit {
   data: IHotel[] = [];
   virtualData: IHotel[] = [];
 
+  subscription$!: Subscription;
   search$!: Observable<LazyLoadResult<IHotel[]>>;
   criteria$ = new Subject<IHotelCriteria>();
 
@@ -112,7 +113,7 @@ export class HotelListPageComponent implements OnInit {
         ),
       );
 
-    this.search$
+    this.subscription$ = this.search$
       .subscribe((res) => {
         if (this.reload) {
           this.count = res.count;
@@ -125,8 +126,10 @@ export class HotelListPageComponent implements OnInit {
         this.virtualData.splice(this.first, this.rows, ...res.data);
         this.virtualData = [...this.virtualData];
       })
+  }
 
-
+  ngOnDestroy() {
+    this.subscription$.unsubscribe();
   }
 
   onProvinceChange(e: any) {
